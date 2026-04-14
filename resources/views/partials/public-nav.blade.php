@@ -10,6 +10,9 @@
             <a href="{{ route('home') }}#aktuality" class="transition hover:text-orange-500">Aktuality</a>
             <a href="{{ route('home') }}#koncerty" class="transition hover:text-orange-500">Koncerty</a>
             <a href="{{ route('gallery.index') }}" class="transition hover:text-orange-500">Galerie</a>
+            @if (config('members.enabled'))
+                <a href="{{ route('members.index') }}" class="transition hover:text-orange-500">Pro členky sboru</a>
+            @endif
             <a href="{{ route('home') }}#kontakt" class="transition hover:text-orange-500">Kontakt</a>
         </nav>
     </div>

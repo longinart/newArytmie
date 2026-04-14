@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\GalleryPhotoController;
+use App\Http\Controllers\MembersAreaController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicSiteController;
 use App\Livewire\Admin\ConcertManager;
@@ -19,6 +20,12 @@ Route::get('/galerie/fotka/{photo}/nahled', [GalleryPhotoController::class, 'thu
 Route::get('/galerie/fotka/{photo}/velke', [GalleryPhotoController::class, 'large'])
     ->name('gallery.photo.large');
 Route::get('/galerie/{slug}', [PublicSiteController::class, 'showAlbum'])->name('gallery.show');
+
+Route::get('/pro-cleny', [MembersAreaController::class, 'show'])->name('members.index');
+Route::post('/pro-cleny', [MembersAreaController::class, 'unlock'])
+    ->middleware('throttle:10,1')
+    ->name('members.unlock');
+Route::post('/pro-cleny/zavrit', [MembersAreaController::class, 'lock'])->name('members.lock');
 
 Route::post('/kontakt', [ContactController::class, 'store'])
     ->middleware('throttle:10,1')
