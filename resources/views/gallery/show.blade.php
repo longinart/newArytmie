@@ -45,11 +45,11 @@
                                         alt="{{ $photo->alt_text ?: $photo->title ?: $album->title }}"
                                         class="aspect-[4/3] w-full object-cover"
                                         data-retryable-image
-                                        loading="{{ $idx < 4 ? 'eager' : 'lazy' }}"
-                                        decoding="{{ $idx < 4 ? 'sync' : 'async' }}"
-                                        @if ($idx < 2)
+                                        loading="{{ $idx === 0 ? 'eager' : 'lazy' }}"
+                                        decoding="async"
+                                        @if ($idx === 0)
                                             fetchpriority="high"
-                                        @elseif ($idx >= 8)
+                                        @elseif ($idx >= 10)
                                             fetchpriority="low"
                                         @endif
                                         width="480"
@@ -76,65 +76,66 @@
             @endif
 
             <template x-teleport="body">
-                <div
-                    x-show="open"
-                    x-transition
-                    class="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-8"
-                    style="display: none;"
-                    role="dialog"
-                    aria-modal="true"
-                    aria-label="Zvětšená fotografie"
-                >
-                    <div class="absolute inset-0 bg-black/90" @click="close()" aria-hidden="true"></div>
-
-                    <button
-                        type="button"
-                        class="absolute left-2 top-1/2 z-[102] -translate-y-1/2 rounded-full border border-white/20 bg-slate-900/80 px-3 py-4 text-2xl text-white shadow-lg transition hover:bg-slate-800 sm:left-4"
-                        @click.stop="prev()"
-                        aria-label="Předchozí fotografie"
+                <template x-if="open">
+                    <div
+                        class="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-8"
+                        x-transition
+                        role="dialog"
+                        aria-modal="true"
+                        aria-label="Zvětšená fotografie"
                     >
-                        ‹
-                    </button>
-                    <button
-                        type="button"
-                        class="absolute right-2 top-1/2 z-[102] -translate-y-1/2 rounded-full border border-white/20 bg-slate-900/80 px-3 py-4 text-2xl text-white shadow-lg transition hover:bg-slate-800 sm:right-4"
-                        @click.stop="next()"
-                        aria-label="Další fotografie"
-                    >
-                        ›
-                    </button>
+                        <div class="absolute inset-0 bg-black/90" @click="close()" aria-hidden="true"></div>
 
-                    <button
-                        type="button"
-                        class="absolute right-2 top-2 z-[102] rounded-full border border-white/20 bg-slate-900/90 px-3 py-1.5 text-sm font-semibold text-white shadow transition hover:bg-slate-800 sm:right-4 sm:top-4"
-                        @click.stop="close()"
-                    >
-                        Zavřít (Esc)
-                    </button>
-
-                    <div class="relative z-[101] flex max-h-[90vh] max-w-[min(100vw-2rem,1200px)] flex-col items-center justify-center">
-                        <img
-                            x-bind:key="'lb-' + i + '-' + (photos[i] ? (photos[i].large || photos[i].full) : '')"
-                            x-bind:src="photos[i] ? (photos[i].large || photos[i].full) : ''"
-                            x-bind:alt="photos[i] ? photos[i].alt : ''"
-                            class="max-h-[min(78vh,900px)] w-auto max-w-full rounded-lg object-contain shadow-2xl"
-                            loading="eager"
-                            decoding="async"
-                            @click.stop
+                        <button
+                            type="button"
+                            class="absolute left-2 top-1/2 z-[102] -translate-y-1/2 rounded-full border border-white/20 bg-slate-900/80 px-3 py-4 text-2xl text-white shadow-lg transition hover:bg-slate-800 sm:left-4"
+                            @click.stop="prev()"
+                            aria-label="Předchozí fotografie"
                         >
-                        <p
-                            x-show="photos[i]?.caption"
-                            x-text="photos[i]?.caption"
-                            class="mt-4 max-w-2xl text-center text-sm leading-relaxed text-slate-200"
-                        ></p>
+                            ‹
+                        </button>
+                        <button
+                            type="button"
+                            class="absolute right-2 top-1/2 z-[102] -translate-y-1/2 rounded-full border border-white/20 bg-slate-900/80 px-3 py-4 text-2xl text-white shadow-lg transition hover:bg-slate-800 sm:right-4"
+                            @click.stop="next()"
+                            aria-label="Další fotografie"
+                        >
+                            ›
+                        </button>
+
+                        <button
+                            type="button"
+                            class="absolute right-2 top-2 z-[102] rounded-full border border-white/20 bg-slate-900/90 px-3 py-1.5 text-sm font-semibold text-white shadow transition hover:bg-slate-800 sm:right-4 sm:top-4"
+                            @click.stop="close()"
+                        >
+                            Zavřít (Esc)
+                        </button>
+
+                        <div class="relative z-[101] flex max-h-[90vh] max-w-[min(100vw-2rem,1200px)] flex-col items-center justify-center">
+                            <img
+                                x-bind:key="'lb-' + i"
+                                :src="lightboxSrc()"
+                                :alt="lightboxAlt()"
+                                class="max-h-[min(78vh,900px)] w-auto max-w-full rounded-lg object-contain shadow-2xl"
+                                loading="eager"
+                                decoding="async"
+                                referrerpolicy="no-referrer-when-downgrade"
+                                @click.stop
+                            >
+                            <p
+                                x-show="photos[i] && photos[i].caption"
+                                x-text="photos[i] ? photos[i].caption : ''"
+                                class="mt-4 max-w-2xl text-center text-sm leading-relaxed text-slate-200"
+                            ></p>
+                        </div>
                     </div>
-                </div>
+                </template>
             </template>
         </div>
         <script>
             (() => {
                 const maxRetries = 2;
-                const baseDelayMs = 300;
+                const baseDelayMs = 600;
 
                 document.querySelectorAll('img[data-retryable-image]').forEach((img) => {
                     const originalSrc = img.currentSrc || img.getAttribute('src');

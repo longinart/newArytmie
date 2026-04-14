@@ -12,10 +12,23 @@ window.albumGallery = function albumGallery(photos) {
         photos,
         open: false,
         i: 0,
+        lightboxSrc() {
+            const p = this.photos[this.i];
+
+            return p ? (p.large || p.full) : '';
+        },
+        lightboxAlt() {
+            const p = this.photos[this.i];
+
+            return p ? (p.alt || '') : '';
+        },
         openAt(index) {
             this.i = Number(index);
-            this.open = true;
-            document.body.style.overflow = 'hidden';
+            // Nejdřív nastavíme index, až potom připojíme lightbox do DOM — jinak první <img> někdy nenačte src.
+            queueMicrotask(() => {
+                this.open = true;
+                document.body.style.overflow = 'hidden';
+            });
         },
         close() {
             this.open = false;
