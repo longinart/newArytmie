@@ -80,7 +80,7 @@
 
     <section id="aktuality" class="bg-slate-800">
         <div class="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8">
-            <h2 class="text-4xl font-semibold tracking-tight text-white sm:text-5xl">Aktuality</h2>
+            <h2 class="text-4xl font-semibold tracking-tight text-orange-400 sm:text-5xl">Aktuality</h2>
 
             <div class="mt-10 grid gap-6 md:grid-cols-3">
                 @forelse ($newsItems as $news)
