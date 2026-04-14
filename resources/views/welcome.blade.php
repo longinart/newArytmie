@@ -15,15 +15,15 @@
             @vite(['resources/css/app.css', 'resources/js/app.js'])
         @endif
     </head>
-    <body class="bg-stone-50 text-stone-900 antialiased">
-        <header class="border-b border-orange-100 bg-white/90 backdrop-blur">
+    <body class="bg-slate-800 text-slate-100 antialiased">
+        <header class="border-b border-slate-700 bg-slate-900/90 backdrop-blur">
             <div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
                 <div>
-                    <p class="text-sm font-semibold uppercase tracking-[0.3em] text-orange-500">Arytmie Praha</p>
-                    <p class="text-sm text-stone-600">Ženský komorní sbor</p>
+                    <p class="text-sm font-semibold uppercase tracking-[0.3em] text-orange-400">Arytmie Praha</p>
+                    <p class="text-sm text-slate-300">Ženský komorní sbor</p>
                 </div>
 
-                <nav class="hidden gap-6 text-sm font-medium text-stone-700 md:flex">
+                <nav class="hidden gap-6 text-sm font-medium text-slate-200 md:flex">
                     <a href="#o-sboru" class="transition hover:text-orange-500">O sboru</a>
                     <a href="#aktuality" class="transition hover:text-orange-500">Aktuality</a>
                     <a href="#koncerty" class="transition hover:text-orange-500">Koncerty</a>
@@ -75,14 +75,14 @@
         @endif
 
         <main>
-            <section class="bg-gradient-to-b from-stone-200/80 to-stone-50">
+            <section class="bg-gradient-to-b from-slate-700 via-slate-800 to-slate-900">
                 <div class="mx-auto grid max-w-6xl gap-10 px-4 py-16 sm:px-6 lg:grid-cols-[1.2fr_0.8fr] lg:px-8 lg:py-24">
                     <div class="space-y-6">
-                        <p class="text-sm font-semibold uppercase tracking-[0.3em] text-orange-500">Nový web ve výstavbě</p>
-                        <h1 class="max-w-3xl text-4xl font-semibold tracking-tight text-stone-900 sm:text-5xl">
+                        <p class="text-sm font-semibold uppercase tracking-[0.3em] text-orange-400">Nový web ve výstavbě</p>
+                        <h1 class="max-w-3xl text-4xl font-semibold tracking-tight text-white sm:text-5xl">
                             Hudba, která spojuje ženské hlasy, prostor a emoci.
                         </h1>
-                        <p class="max-w-2xl text-lg leading-8 text-stone-700">
+                        <p class="max-w-2xl text-lg leading-8 text-slate-200">
                             Připravujeme nový web ženského komorního sboru Arytmie Praha s přehlednými aktualitami,
                             kalendářem koncertů, galerií a jednoduchou administrací pro správu obsahu.
                         </p>
@@ -95,7 +95,7 @@
                             </a>
                             <a
                                 href="#kontakt"
-                                class="rounded-full border border-orange-200 bg-white px-6 py-3 text-center text-sm font-semibold text-orange-600 transition hover:border-orange-300 hover:bg-orange-50"
+                                class="rounded-full border border-orange-300 bg-slate-800 px-6 py-3 text-center text-sm font-semibold text-orange-300 transition hover:border-orange-200 hover:bg-slate-700"
                             >
                                 Kontaktovat sbor
                             </a>
@@ -135,7 +135,7 @@
                 <div class="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8">
                     <div class="flex items-end justify-between gap-6">
                         <div>
-                            <p class="text-sm font-semibold uppercase tracking-[0.3em] text-orange-500">Aktuality</p>
+                            <p class="text-sm font-semibold uppercase tracking-[0.3em] text-orange-400">Aktuality</p>
                             <h2 class="mt-3 text-3xl font-semibold tracking-tight">Novinky spravované z administrace</h2>
                         </div>
                         <p class="hidden max-w-md text-sm text-stone-600 md:block">
@@ -210,17 +210,17 @@
                 </div>
             </section>
 
-            <section id="galerie" class="bg-white">
+            <section id="galerie" class="bg-slate-800">
                 <div class="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8">
                     <p class="text-sm font-semibold uppercase tracking-[0.3em] text-orange-500">Galerie</p>
-                    <h2 class="mt-3 text-3xl font-semibold tracking-tight">Fotografie budou rozdělené do alb</h2>
+                    <h2 class="mt-3 text-3xl font-semibold tracking-tight text-white">Fotografie budou rozdělené do alb</h2>
                     <div class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                         <div class="aspect-square rounded-3xl bg-orange-100"></div>
                         <div class="aspect-square rounded-3xl bg-orange-200"></div>
-                        <div class="aspect-square rounded-3xl bg-stone-200"></div>
-                        <div class="aspect-square rounded-3xl bg-stone-300"></div>
+                        <div class="aspect-square rounded-3xl bg-slate-600"></div>
+                        <div class="aspect-square rounded-3xl bg-slate-500"></div>
                     </div>
-                    <p class="mt-6 max-w-2xl text-sm leading-6 text-stone-700">
+                    <p class="mt-6 max-w-2xl text-sm leading-6 text-slate-200">
                         Datový model už počítá s alby i samostatnými fotografiemi, včetně pořadí, popisků a publikačního stavu.
                     </p>
                     <a href="{{ route('gallery.index') }}" class="mt-6 inline-block text-sm font-semibold text-orange-500 hover:text-orange-600">
@@ -233,8 +233,8 @@
                 <div class="grid gap-8 lg:grid-cols-[0.9fr_1.1fr]">
                     <div class="space-y-4">
                         <p class="text-sm font-semibold uppercase tracking-[0.3em] text-orange-500">Kontakt</p>
-                        <h2 class="text-3xl font-semibold tracking-tight">Spojte se s námi</h2>
-                        <p class="text-stone-700">
+                        <h2 class="text-3xl font-semibold tracking-tight text-white">Spojte se s námi</h2>
+                        <p class="text-slate-200">
                             Kontaktní formulář bude ukládat zprávy do administrace. V další etapě doplním validaci,
                             CSRF ochranu, odeslání e-mailu a správu přijatých zpráv.
                         </p>

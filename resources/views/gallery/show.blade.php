@@ -8,7 +8,7 @@
             @vite(['resources/css/app.css', 'resources/js/app.js'])
         @endif
     </head>
-    <body class="bg-stone-50 text-stone-900 antialiased">
+    <body class="bg-slate-800 text-slate-100 antialiased">
         <main class="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
             <a href="{{ route('gallery.index') }}" class="text-sm text-orange-500 hover:text-orange-600">&larr; Zpět na galerii</a>
             <h1 class="mt-4 text-3xl font-semibold">{{ $album->title }}</h1>
