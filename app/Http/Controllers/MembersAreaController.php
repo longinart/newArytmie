@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Support\GoogleCalendarEmbed;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -19,7 +20,7 @@ class MembersAreaController extends Controller
             if (! $configured) {
                 $request->session()->forget('members_area_unlocked');
             } else {
-                return view('members.dashboard');
+                return redirect()->route('members.harmonogram');
             }
         }
 
@@ -47,7 +48,25 @@ class MembersAreaController extends Controller
 
         $request->session()->put('members_area_unlocked', true);
 
-        return redirect()->route('members.index');
+        return redirect()->route('members.harmonogram');
+    }
+
+    public function harmonogram(): View
+    {
+        return view('members.harmonogram', [
+            'membersCalendarEmbedUrl' => GoogleCalendarEmbed::membersRehearsalEmbedUrl(),
+            'membersCalendarIcalUrl' => config('members.rehearsal_calendar.ical_url'),
+        ]);
+    }
+
+    public function naslechy(): View
+    {
+        return view('members.naslechy');
+    }
+
+    public function noty(): View
+    {
+        return view('members.noty');
     }
 
     public function lock(Request $request): RedirectResponse

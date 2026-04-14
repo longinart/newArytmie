@@ -27,6 +27,12 @@ Route::post('/pro-cleny', [MembersAreaController::class, 'unlock'])
     ->name('members.unlock');
 Route::post('/pro-cleny/zavrit', [MembersAreaController::class, 'lock'])->name('members.lock');
 
+Route::middleware('members.unlocked')->prefix('pro-cleny')->name('members.')->group(function () {
+    Route::get('/harmonogram', [MembersAreaController::class, 'harmonogram'])->name('harmonogram');
+    Route::get('/naslechy', [MembersAreaController::class, 'naslechy'])->name('naslechy');
+    Route::get('/noty', [MembersAreaController::class, 'noty'])->name('noty');
+});
+
 Route::post('/kontakt', [ContactController::class, 'store'])
     ->middleware('throttle:10,1')
     ->name('contact.store');
