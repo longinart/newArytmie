@@ -1,0 +1,16 @@
+* text=auto
+
+*.blade.php text diff=html
+*.php text diff=php
+*.css text diff=css
+*.js text
+*.json text
+*.md text
+
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.gif binary
+*.ico binary
+*.woff2 binary
