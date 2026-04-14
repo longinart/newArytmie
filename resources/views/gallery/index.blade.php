@@ -32,12 +32,27 @@
                     <a href="{{ route('gallery.show', $album->slug) }}" class="rounded-2xl border border-teal-100 bg-white p-4 shadow-sm hover:shadow">
                         @php $cover = $album->cover_image_path ?: $album->photos->first()?->image_path; @endphp
                         @if ($cover)
-                            <img src="{{ Storage::url($cover) }}" alt="{{ $album->title }}" class="h-48 w-full rounded-xl object-cover">
+                            <img
+                                src="{{ Storage::disk('public')->url($cover) }}"
+                                alt="{{ $album->title }}"
+                                class="h-48 w-full rounded-xl object-cover"
+                                loading="lazy"
+                                decoding="async"
+                            >
                         @else
                             <div class="h-48 w-full rounded-xl bg-teal-100"></div>
                         @endif
                         <h2 class="mt-4 text-lg font-semibold">{{ $album->title }}</h2>
-                        <p class="mt-1 text-sm text-stone-600">{{ $album->photos->count() }} fotek</p>
+                        <p class="mt-1 text-sm text-stone-600">
+                            {{ $album->published_photos_count }}
+                            @if ($album->published_photos_count === 1)
+                                fotka
+                            @elseif ($album->published_photos_count >= 2 && $album->published_photos_count <= 4)
+                                fotky
+                            @else
+                                fotek
+                            @endif
+                        </p>
                         @if ($album->description)
                             <p class="mt-2 text-sm text-stone-700">{{ \Illuminate\Support\Str::limit($album->description, 120) }}</p>
                         @endif

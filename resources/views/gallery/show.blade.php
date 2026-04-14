@@ -16,13 +16,25 @@
                 <p class="mt-2 max-w-3xl text-stone-700">{{ $album->description }}</p>
             @endif
 
+            @if ($photoPaginator->total() > 0)
+                <p class="mt-4 text-sm text-stone-600">
+                    Zobrazeno {{ $photoPaginator->firstItem() }}–{{ $photoPaginator->lastItem() }} z {{ $photoPaginator->total() }} fotek
+                </p>
+            @endif
+
             @forelse ($photosByYear as $year => $photos)
                 <section class="mt-8">
                     <h2 class="mb-4 text-xl font-semibold">{{ $year }}</h2>
                     <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                         @foreach ($photos as $photo)
                             <figure class="rounded-xl border border-teal-100 bg-white p-2 shadow-sm">
-                                <img src="{{ Storage::url($photo->image_path) }}" alt="{{ $photo->alt_text ?: $photo->title ?: $album->title }}" class="h-60 w-full rounded-lg object-cover">
+                                <img
+                                    src="{{ Storage::disk('public')->url($photo->image_path) }}"
+                                    alt="{{ $photo->alt_text ?: $photo->title ?: $album->title }}"
+                                    class="h-60 w-full rounded-lg object-cover"
+                                    loading="lazy"
+                                    decoding="async"
+                                >
                                 @if ($photo->caption)
                                     <figcaption class="px-2 py-3 text-sm text-stone-700">
                                         {{ $photo->caption }}
@@ -35,6 +47,12 @@
             @empty
                 <p class="mt-8 text-sm text-stone-600">Album zatím neobsahuje žádné publikované fotky.</p>
             @endforelse
+
+            @if ($photoPaginator->hasPages())
+                <nav class="mt-10 flex justify-center" aria-label="Stránkování fotek">
+                    {{ $photoPaginator->onEachSide(1)->links() }}
+                </nav>
+            @endif
         </main>
     </body>
 </html>

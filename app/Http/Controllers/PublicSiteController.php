@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Album;
 use App\Models\Concert;
 use App\Models\News;
-use App\Models\Album;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Schema;
 
 class PublicSiteController extends Controller
@@ -69,7 +70,9 @@ class PublicSiteController extends Controller
         if (Schema::hasTable('albums')) {
             $albums = Album::query()
                 ->where('is_published', true)
-                ->with(['photos' => fn ($query) => $query->where('is_published', true)->orderBy('sort_order')])
+                ->withCount(['photos as published_photos_count' => fn ($q) => $q->where('is_published', true)])
+                ->withMax(['photos as latest_published_taken_at' => fn ($q) => $q->where('is_published', true)], 'taken_at')
+                ->with(['photos' => fn ($query) => $query->where('is_published', true)->orderBy('sort_order')->limit(1)])
                 ->orderByDesc('published_at')
                 ->orderBy('title')
                 ->get();
@@ -80,7 +83,8 @@ class PublicSiteController extends Controller
                 return true;
             }
 
-            $latestTakenAt = $album->photos->max('taken_at');
+            $raw = $album->latest_published_taken_at;
+            $latestTakenAt = $raw !== null ? Carbon::parse($raw)->startOfDay() : null;
             if (! $latestTakenAt) {
                 return $filter !== 'archiv';
             }
@@ -96,20 +100,27 @@ class PublicSiteController extends Controller
         ]);
     }
 
-    public function showAlbum(string $slug)
+    public function showAlbum(Request $request, string $slug)
     {
         abort_unless(Schema::hasTable('albums'), 404);
 
         $album = Album::query()
             ->where('slug', $slug)
             ->where('is_published', true)
-            ->with(['photos' => fn ($query) => $query->where('is_published', true)->orderBy('sort_order')])
             ->firstOrFail();
 
-        $photosByYear = $album->photos
+        $perPage = max(12, min(96, (int) $request->query('per_page', 48)));
+
+        $photoPaginator = $album->photos()
+            ->where('is_published', true)
+            ->orderBy('sort_order')
+            ->paginate($perPage)
+            ->withQueryString();
+
+        $photosByYear = $photoPaginator->getCollection()
             ->groupBy(fn ($photo) => $photo->taken_at?->format('Y') ?? 'Nezařazeno')
             ->sortKeysDesc();
 
-        return view('gallery.show', compact('album', 'photosByYear'));
+        return view('gallery.show', compact('album', 'photosByYear', 'photoPaginator'));
     }
 }

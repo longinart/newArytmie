@@ -73,7 +73,7 @@
                 <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                     @forelse ($photos as $photo)
                         <div class="rounded-lg border border-gray-200 p-3">
-                            <img src="{{ Storage::url($photo->image_path) }}" alt="{{ $photo->alt_text ?: $photo->title }}" class="h-36 w-full rounded object-cover">
+                            <img src="{{ Storage::disk('public')->url($photo->image_path) }}" alt="{{ $photo->alt_text ?: $photo->title }}" class="h-36 w-full rounded object-cover">
                             <p class="mt-2 truncate text-sm font-medium">{{ $photo->title ?: 'Bez nazvu' }}</p>
                             <button wire:click="deletePhoto({{ $photo->id }})" wire:confirm="Smazat fotku?" class="mt-2 rounded border border-red-300 px-2 py-1 text-xs text-red-700">Smazat</button>
                         </div>
