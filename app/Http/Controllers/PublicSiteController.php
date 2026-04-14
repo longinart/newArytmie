@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\Album;
 use App\Models\Concert;
 use App\Models\News;
+use App\Models\Photo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Storage;
 
 class PublicSiteController extends Controller
 {
@@ -34,7 +36,18 @@ class PublicSiteController extends Controller
                 ->get();
         }
 
-        return view('welcome', compact('newsItems', 'concertItems'));
+        $galleryPreviewPhotos = collect();
+        if (Schema::hasTable('photos') && Schema::hasTable('albums')) {
+            $galleryPreviewPhotos = Photo::query()
+                ->where('is_published', true)
+                ->whereHas('album', fn ($q) => $q->where('is_published', true))
+                ->inRandomOrder()
+                ->limit(4)
+                ->with('album')
+                ->get();
+        }
+
+        return view('welcome', compact('newsItems', 'concertItems', 'galleryPreviewPhotos'));
     }
 
     public function about()
@@ -128,6 +141,16 @@ class PublicSiteController extends Controller
             ->groupBy(fn ($photo) => $photo->taken_at?->format('Y') ?? 'Nezařazeno')
             ->sortKeysDesc();
 
-        return view('gallery.show', compact('album', 'photosByYear', 'photoPaginator'));
+        $lightboxPhotos = $photoPaginator->getCollection()
+            ->map(fn (Photo $photo) => [
+                'full' => Storage::disk('public')->url($photo->image_path),
+                'thumb' => route('gallery.photo.thumb', $photo),
+                'alt' => $photo->alt_text ?: ($photo->title ?: $album->title),
+                'caption' => $photo->caption ?? '',
+            ])
+            ->values()
+            ->all();
+
+        return view('gallery.show', compact('album', 'photosByYear', 'photoPaginator', 'lightboxPhotos'));
     }
 }

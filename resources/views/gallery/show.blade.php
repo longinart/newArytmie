@@ -9,42 +9,55 @@
         @endif
     </head>
     <body class="bg-slate-800 text-slate-100 antialiased">
-        <main class="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
-            <a href="{{ route('gallery.index') }}" class="text-sm text-orange-500 hover:text-orange-600">&larr; Zpět na galerii</a>
-            <h1 class="mt-4 text-3xl font-semibold">{{ $album->title }}</h1>
+        <div
+            class="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8"
+            x-data="albumGallery(@js($lightboxPhotos))"
+            @keydown.window="handleKey($event)"
+        >
+            <a href="{{ route('gallery.index') }}" class="text-sm font-medium text-orange-400 transition hover:text-orange-300">&larr; Zpět na galerii</a>
+            <h1 class="mt-4 text-3xl font-semibold text-white">{{ $album->title }}</h1>
             @if ($album->description)
-                <p class="mt-2 max-w-3xl text-stone-700">{{ $album->description }}</p>
+                <p class="mt-2 max-w-3xl text-slate-300">{{ $album->description }}</p>
             @endif
 
             @if ($photoPaginator->total() > 0)
-                <p class="mt-4 text-sm text-stone-600">
+                <p class="mt-4 text-sm text-slate-400">
                     Zobrazeno {{ $photoPaginator->firstItem() }}–{{ $photoPaginator->lastItem() }} z {{ $photoPaginator->total() }} fotek
+                    <span class="text-slate-500"> — kliknutím otevřete velký náhled, šipky na klávesnici pro další fotku.</span>
                 </p>
             @endif
 
             @php $gridPhotoIndex = 0; @endphp
             @forelse ($photosByYear as $year => $photos)
                 <section class="mt-8">
-                    <h2 class="mb-4 text-xl font-semibold">{{ $year }}</h2>
+                    <h2 class="mb-4 text-xl font-semibold text-white">{{ $year }}</h2>
                     <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                         @foreach ($photos as $photo)
                             @php $idx = $gridPhotoIndex++; @endphp
-                            <figure class="rounded-xl border border-orange-100 bg-white p-2 shadow-sm">
-                                <img
-                                    src="{{ Storage::disk('public')->url($photo->image_path) }}"
-                                    alt="{{ $photo->alt_text ?: $photo->title ?: $album->title }}"
-                                    class="h-60 w-full rounded-lg object-cover"
-                                    data-retryable-image
-                                    loading="{{ $idx < 12 ? 'eager' : 'lazy' }}"
-                                    decoding="{{ $idx < 12 ? 'sync' : 'async' }}"
-                                    @if ($idx < 4)
-                                        fetchpriority="high"
-                                    @elseif ($idx >= 12)
-                                        fetchpriority="low"
-                                    @endif
+                            <figure class="overflow-hidden rounded-xl border border-slate-600/80 bg-slate-900/50 shadow-sm">
+                                <button
+                                    type="button"
+                                    class="block w-full cursor-zoom-in text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-400"
+                                    @click="openAt({{ $idx }})"
                                 >
+                                    <img
+                                        src="{{ route('gallery.photo.thumb', $photo) }}"
+                                        alt="{{ $photo->alt_text ?: $photo->title ?: $album->title }}"
+                                        class="aspect-[4/3] w-full object-cover"
+                                        data-retryable-image
+                                        loading="{{ $idx < 12 ? 'eager' : 'lazy' }}"
+                                        decoding="{{ $idx < 12 ? 'sync' : 'async' }}"
+                                        @if ($idx < 4)
+                                            fetchpriority="high"
+                                        @elseif ($idx >= 12)
+                                            fetchpriority="low"
+                                        @endif
+                                        width="900"
+                                        height="675"
+                                    >
+                                </button>
                                 @if ($photo->caption)
-                                    <figcaption class="px-2 py-3 text-sm text-stone-700">
+                                    <figcaption class="px-3 py-2 text-sm text-slate-300">
                                         {{ $photo->caption }}
                                     </figcaption>
                                 @endif
@@ -53,7 +66,7 @@
                     </div>
                 </section>
             @empty
-                <p class="mt-8 text-sm text-stone-600">Album zatím neobsahuje žádné publikované fotky.</p>
+                <p class="mt-8 text-sm text-slate-400">Album zatím neobsahuje žádné publikované fotky.</p>
             @endforelse
 
             @if ($photoPaginator->hasPages())
@@ -61,7 +74,60 @@
                     {{ $photoPaginator->onEachSide(1)->links() }}
                 </nav>
             @endif
-        </main>
+
+            <template x-teleport="body">
+                <div
+                    x-show="open"
+                    x-transition
+                    class="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-8"
+                    style="display: none;"
+                    role="dialog"
+                    aria-modal="true"
+                    aria-label="Zvětšená fotografie"
+                >
+                    <div class="absolute inset-0 bg-black/90" @click="close()" aria-hidden="true"></div>
+
+                    <button
+                        type="button"
+                        class="absolute left-2 top-1/2 z-[102] -translate-y-1/2 rounded-full border border-white/20 bg-slate-900/80 px-3 py-4 text-2xl text-white shadow-lg transition hover:bg-slate-800 sm:left-4"
+                        @click.stop="prev()"
+                        aria-label="Předchozí fotografie"
+                    >
+                        ‹
+                    </button>
+                    <button
+                        type="button"
+                        class="absolute right-2 top-1/2 z-[102] -translate-y-1/2 rounded-full border border-white/20 bg-slate-900/80 px-3 py-4 text-2xl text-white shadow-lg transition hover:bg-slate-800 sm:right-4"
+                        @click.stop="next()"
+                        aria-label="Další fotografie"
+                    >
+                        ›
+                    </button>
+
+                    <button
+                        type="button"
+                        class="absolute right-2 top-2 z-[102] rounded-full border border-white/20 bg-slate-900/90 px-3 py-1.5 text-sm font-semibold text-white shadow transition hover:bg-slate-800 sm:right-4 sm:top-4"
+                        @click.stop="close()"
+                    >
+                        Zavřít (Esc)
+                    </button>
+
+                    <div class="relative z-[101] flex max-h-[90vh] max-w-[min(100vw-2rem,1200px)] flex-col items-center justify-center">
+                        <img
+                            x-bind:src="photos[i]?.full"
+                            x-bind:alt="photos[i]?.alt"
+                            class="max-h-[min(78vh,900px)] w-auto max-w-full rounded-lg object-contain shadow-2xl"
+                            @click.stop
+                        >
+                        <p
+                            x-show="photos[i]?.caption"
+                            x-text="photos[i]?.caption"
+                            class="mt-4 max-w-2xl text-center text-sm leading-relaxed text-slate-200"
+                        ></p>
+                    </div>
+                </div>
+            </template>
+        </div>
         <script>
             (() => {
                 const maxRetries = 2;

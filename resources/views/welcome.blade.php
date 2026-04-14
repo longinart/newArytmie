@@ -152,18 +152,38 @@
     <section id="galerie" class="bg-slate-800">
         <div class="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8">
             <p class="text-sm font-semibold uppercase tracking-[0.3em] text-orange-500">Galerie</p>
-            <h2 class="mt-3 text-3xl font-semibold tracking-tight text-white">Fotografie budou rozdělené do alb</h2>
-            <div class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                <div class="aspect-square rounded-3xl bg-orange-100"></div>
-                <div class="aspect-square rounded-3xl bg-orange-200"></div>
-                <div class="aspect-square rounded-3xl bg-slate-600"></div>
-                <div class="aspect-square rounded-3xl bg-slate-500"></div>
-            </div>
-            <p class="mt-6 max-w-2xl text-sm leading-6 text-slate-200">
-                Datový model už počítá s alby i samostatnými fotografiemi, včetně pořadí, popisků a publikačního stavu.
+            <h2 class="mt-3 text-3xl font-semibold tracking-tight text-white">Momentky z koncertů a zkoušek</h2>
+            <p class="mt-3 max-w-2xl text-sm leading-6 text-slate-300">
+                Náhodný výběr z publikovaných fotek v albech — kompletní fotogalerii otevřete odkazem níže.
             </p>
-            <a href="{{ route('gallery.index') }}" class="mt-6 inline-block text-sm font-semibold text-orange-500 hover:text-orange-600">
-                Otevrit galerii &rarr;
+            <div class="mt-8 grid grid-cols-2 gap-4 lg:grid-cols-4">
+                @foreach ($galleryPreviewPhotos as $photo)
+                    <a
+                        href="{{ route('gallery.show', $photo->album->slug) }}"
+                        class="group relative aspect-square overflow-hidden rounded-3xl border border-slate-600/80 bg-slate-900/50 shadow-sm ring-0 transition hover:ring-2 hover:ring-orange-400/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-400"
+                    >
+                        <img
+                            src="{{ route('gallery.photo.thumb', $photo) }}"
+                            alt="{{ $photo->alt_text ?: ($photo->title ?: $photo->album->title) }}"
+                            class="h-full w-full object-cover transition duration-300 group-hover:scale-105"
+                            loading="lazy"
+                            decoding="async"
+                            width="900"
+                            height="900"
+                        >
+                    </a>
+                @endforeach
+                @for ($g = $galleryPreviewPhotos->count(); $g < 4; $g++)
+                    <div
+                        class="flex aspect-square items-center justify-center rounded-3xl border border-dashed border-slate-600/50 bg-slate-900/20 px-3 text-center text-xs leading-snug text-slate-500"
+                        aria-hidden="true"
+                    >
+                        Brzy přibude další fotka
+                    </div>
+                @endfor
+            </div>
+            <a href="{{ route('gallery.index') }}" class="mt-8 inline-block text-sm font-semibold text-orange-400 transition hover:text-orange-300">
+                Otevřít celou galerii &rarr;
             </a>
         </div>
     </section>

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\GalleryPhotoController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicSiteController;
 use App\Livewire\Admin\ConcertManager;
@@ -13,6 +14,8 @@ Route::get('/o-nas', [PublicSiteController::class, 'about'])->name('about');
 Route::get('/aktuality/{slug}', [PublicSiteController::class, 'showNews'])->name('news.show');
 Route::get('/koncerty/{slug}', [PublicSiteController::class, 'showConcert'])->name('concerts.show');
 Route::get('/galerie', [PublicSiteController::class, 'gallery'])->name('gallery.index');
+Route::get('/galerie/fotka/{photo}/nahled', [GalleryPhotoController::class, 'thumbnail'])
+    ->name('gallery.photo.thumb');
 Route::get('/galerie/{slug}', [PublicSiteController::class, 'showAlbum'])->name('gallery.show');
 
 Route::post('/kontakt', [ContactController::class, 'store'])

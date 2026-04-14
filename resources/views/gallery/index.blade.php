@@ -31,8 +31,25 @@
                 @forelse ($albums as $album)
                     @php $albumCardIndex = $loop->index; @endphp
                     <a href="{{ route('gallery.show', $album->slug) }}" class="rounded-2xl border border-orange-100 bg-white p-4 shadow-sm hover:shadow">
-                        @php $cover = $album->cover_image_path ?: $album->photos->first()?->image_path; @endphp
-                        @if ($cover)
+                        @php
+                            $cover = $album->cover_image_path ?: $album->photos->first()?->image_path;
+                            $coverThumbPhoto = $album->photos->first();
+                        @endphp
+                        @if ($coverThumbPhoto)
+                            <img
+                                src="{{ route('gallery.photo.thumb', $coverThumbPhoto) }}"
+                                alt="{{ $album->title }}"
+                                class="h-48 w-full rounded-xl object-cover"
+                                data-retryable-image
+                                loading="{{ $albumCardIndex < 6 ? 'eager' : 'lazy' }}"
+                                decoding="{{ $albumCardIndex < 6 ? 'sync' : 'async' }}"
+                                @if ($albumCardIndex < 3)
+                                    fetchpriority="high"
+                                @elseif ($albumCardIndex >= 6)
+                                    fetchpriority="low"
+                                @endif
+                            >
+                        @elseif ($cover)
                             <img
                                 src="{{ Storage::disk('public')->url($cover) }}"
                                 alt="{{ $album->title }}"
