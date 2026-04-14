@@ -15,12 +15,19 @@ class NewsManager extends Component
     public ?int $editingId = null;
 
     public string $title = '';
+
     public string $slug = '';
+
     public string $excerpt = '';
+
     public string $content = '';
+
     public string $seo_title = '';
+
     public string $seo_description = '';
+
     public bool $is_published = false;
+
     public ?string $published_at = null;
 
     public function updatedTitle(string $value): void
@@ -54,13 +61,31 @@ class NewsManager extends Component
             $validated['published_at'] = null;
         }
 
-        News::updateOrCreate(
+        $record = News::updateOrCreate(
             ['id' => $this->editingId],
             $validated
         );
 
+        $record->refresh();
+
         $this->resetForm();
-        session()->flash('status', 'Aktualita byla uložena.');
+
+        if (! $record->is_published) {
+            session()->flash(
+                'status',
+                'Aktualita byla uložena jako koncept. Na úvodní stránce se nezobrazí, dokud nezaškrtnete „Publikováno“ (nebo v seznamu vpravo kliknete na „Publikovat“).'
+            );
+        } elseif ($record->published_at && $record->published_at->isFuture()) {
+            session()->flash(
+                'status',
+                'Aktualita je uložená, ale na úvodní stránce se zobrazí až od '.$record->published_at->format('d.m.Y H:i').' (pole „Publikovat od“ je v budoucnosti). Do té doby ji uvidíte jen tady v administraci.'
+            );
+        } else {
+            session()->flash(
+                'status',
+                'Aktualita je publikovaná a měla by být vidět na úvodní stránce v sekci Aktuality (případně obnovte stránku Ctrl+F5).'
+            );
+        }
     }
 
     public function edit(int $id): void

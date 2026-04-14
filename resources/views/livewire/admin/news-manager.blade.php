@@ -57,10 +57,16 @@
                         <textarea wire:model="seo_description" rows="2" class="w-full rounded-lg border-gray-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500"></textarea>
                     </div>
 
-                    <label class="flex items-center gap-2 text-sm text-gray-700">
-                        <input wire:model="is_published" type="checkbox" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500">
-                        Publikováno
-                    </label>
+                    <div class="space-y-2">
+                        <label class="flex items-center gap-2 text-sm text-gray-700">
+                            <input wire:model.live="is_published" type="checkbox" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500">
+                            Publikováno
+                        </label>
+                        <p class="text-xs leading-relaxed text-gray-500">
+                            Úvodní stránka zobrazí aktualitu jen pokud je „Publikováno“ zaškrtnuté a datum „Publikovat od“ není v budoucnosti
+                            (prázdné datum při publikování = ihned).
+                        </p>
+                    </div>
 
                     <div class="flex gap-2">
                         <button type="submit" class="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700">
