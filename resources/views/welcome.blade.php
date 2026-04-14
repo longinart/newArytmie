@@ -50,15 +50,15 @@
         <div class="grid gap-8 lg:grid-cols-2">
             <div>
                 <p class="text-sm font-semibold uppercase tracking-[0.3em] text-orange-500">O sboru</p>
-                <h2 class="mt-3 text-3xl font-semibold tracking-tight">Komorní ženský sbor s prostorem pro detail</h2>
+                <h2 class="mt-3 text-3xl font-semibold tracking-tight text-white">Komorní ženský sbor s prostorem pro detail</h2>
             </div>
-            <div class="space-y-4 text-stone-700">
-                <p>
+            <div class="space-y-4 text-stone-100">
+                <p class="leading-7 text-stone-100">
                     Ženský komorní sbor Arytmie Praha sdružuje zpěvačky, které rády objevují repertoár od renesance po současnost
                     a dbají na sjednocený zvuk i výraz v menším obsazení.
                 </p>
                 <p>
-                    <a href="{{ route('about') }}" class="font-semibold text-orange-600 transition hover:text-orange-500">
+                    <a href="{{ route('about') }}" class="font-semibold text-orange-300 transition hover:text-orange-200">
                         Celý text o sboru &rarr;
                     </a>
                 </p>
@@ -66,41 +66,41 @@
         </div>
     </section>
 
-    <section id="aktuality" class="bg-white">
+    <section id="aktuality" class="bg-slate-800">
         <div class="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8">
             <div class="flex items-end justify-between gap-6">
                 <div>
                     <p class="text-sm font-semibold uppercase tracking-[0.3em] text-orange-400">Aktuality</p>
-                    <h2 class="mt-3 text-3xl font-semibold tracking-tight">Novinky spravované z administrace</h2>
+                    <h2 class="mt-3 text-3xl font-semibold tracking-tight text-white">Novinky spravované z administrace</h2>
                 </div>
-                <p class="hidden max-w-md text-sm text-stone-600 md:block">
+                <p class="hidden max-w-md text-sm text-slate-300 md:block">
                     Tady budou postupně přibývat články a oznámení načítané z databáze.
                 </p>
             </div>
 
             <div class="mt-8 grid gap-6 md:grid-cols-3">
                 @forelse ($newsItems as $news)
-                    <article class="rounded-3xl border border-stone-200 bg-stone-50 p-6">
-                        <p class="text-sm text-orange-500">
+                    <article class="rounded-3xl border border-slate-600/80 bg-slate-900/50 p-6 shadow-sm">
+                        <p class="text-sm text-orange-400">
                             {{ $news->published_at?->format('d.m.Y') ?? 'Aktualita' }}
                         </p>
-                        <h3 class="mt-2 text-xl font-semibold">
-                            <a href="{{ route('news.show', $news->slug) }}" class="hover:text-orange-500">
+                        <h3 class="mt-2 text-xl font-semibold text-white">
+                            <a href="{{ route('news.show', $news->slug) }}" class="transition hover:text-orange-300">
                                 {{ $news->title }}
                             </a>
                         </h3>
-                        <p class="mt-3 text-sm leading-6 text-stone-700">
+                        <p class="mt-3 text-sm leading-6 text-slate-300">
                             {{ \Illuminate\Support\Str::limit($news->excerpt ?: strip_tags($news->content), 140) }}
                         </p>
-                        <a href="{{ route('news.show', $news->slug) }}" class="mt-4 inline-block text-sm font-semibold text-orange-500 hover:text-orange-600">
+                        <a href="{{ route('news.show', $news->slug) }}" class="mt-4 inline-block text-sm font-semibold text-orange-400 transition hover:text-orange-300">
                             Cist aktualitu &rarr;
                         </a>
                     </article>
                 @empty
-                    <article class="rounded-3xl border border-stone-200 bg-stone-50 p-6 md:col-span-3">
-                        <p class="text-sm text-orange-500">Zatím bez příspěvků</p>
-                        <h3 class="mt-2 text-xl font-semibold">Aktuality se brzy objeví</h3>
-                        <p class="mt-3 text-sm leading-6 text-stone-700">
+                    <article class="rounded-3xl border border-slate-600/80 bg-slate-900/50 p-6 shadow-sm md:col-span-3">
+                        <p class="text-sm text-orange-400">Zatím bez příspěvků</p>
+                        <h3 class="mt-2 text-xl font-semibold text-white">Aktuality se brzy objeví</h3>
+                        <p class="mt-3 text-sm leading-6 text-slate-300">
                             Jakmile v administraci publikujete první článek, zobrazí se automaticky tady.
                         </p>
                     </article>
