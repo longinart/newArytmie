@@ -12,17 +12,17 @@
         <main class="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between">
                 <h1 class="text-3xl font-semibold">Fotogalerie</h1>
-                <a href="{{ route('home') }}" class="text-sm text-teal-700 hover:text-teal-800">&larr; Zpět na úvod</a>
+                <a href="{{ route('home') }}" class="text-sm text-orange-500 hover:text-orange-600">&larr; Zpět na úvod</a>
             </div>
 
             <div class="mt-6 flex flex-wrap gap-2">
-                <a href="{{ route('gallery.index', ['typ' => 'vse']) }}" class="rounded-full px-4 py-2 text-sm {{ $activeFilter === 'vse' ? 'bg-teal-700 text-white' : 'bg-white text-stone-700 border border-stone-200' }}">
+                <a href="{{ route('gallery.index', ['typ' => 'vse']) }}" class="rounded-full px-4 py-2 text-sm {{ $activeFilter === 'vse' ? 'bg-orange-500 text-white' : 'bg-white text-stone-700 border border-stone-200' }}">
                     Všechna alba
                 </a>
-                <a href="{{ route('gallery.index', ['typ' => 'nove']) }}" class="rounded-full px-4 py-2 text-sm {{ $activeFilter === 'nove' ? 'bg-teal-700 text-white' : 'bg-white text-stone-700 border border-stone-200' }}">
+                <a href="{{ route('gallery.index', ['typ' => 'nove']) }}" class="rounded-full px-4 py-2 text-sm {{ $activeFilter === 'nove' ? 'bg-orange-500 text-white' : 'bg-white text-stone-700 border border-stone-200' }}">
                     Nové fotky
                 </a>
-                <a href="{{ route('gallery.index', ['typ' => 'archiv']) }}" class="rounded-full px-4 py-2 text-sm {{ $activeFilter === 'archiv' ? 'bg-teal-700 text-white' : 'bg-white text-stone-700 border border-stone-200' }}">
+                <a href="{{ route('gallery.index', ['typ' => 'archiv']) }}" class="rounded-full px-4 py-2 text-sm {{ $activeFilter === 'archiv' ? 'bg-orange-500 text-white' : 'bg-white text-stone-700 border border-stone-200' }}">
                     Archiv
                 </a>
             </div>
@@ -30,7 +30,7 @@
             <div class="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                 @forelse ($albums as $album)
                     @php $albumCardIndex = $loop->index; @endphp
-                    <a href="{{ route('gallery.show', $album->slug) }}" class="rounded-2xl border border-teal-100 bg-white p-4 shadow-sm hover:shadow">
+                    <a href="{{ route('gallery.show', $album->slug) }}" class="rounded-2xl border border-orange-100 bg-white p-4 shadow-sm hover:shadow">
                         @php $cover = $album->cover_image_path ?: $album->photos->first()?->image_path; @endphp
                         @if ($cover)
                             <img
@@ -47,7 +47,7 @@
                                 @endif
                             >
                         @else
-                            <div class="h-48 w-full rounded-xl bg-teal-100"></div>
+                            <div class="h-48 w-full rounded-xl bg-orange-100"></div>
                         @endif
                         <h2 class="mt-4 text-lg font-semibold">{{ $album->title }}</h2>
                         <p class="mt-1 text-sm text-stone-600">

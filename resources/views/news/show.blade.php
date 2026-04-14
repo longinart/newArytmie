@@ -11,10 +11,10 @@
     </head>
     <body class="bg-stone-50 text-stone-900 antialiased">
         <main class="mx-auto max-w-4xl px-4 py-10 sm:px-6 lg:px-8">
-            <a href="{{ route('home') }}" class="text-sm text-teal-700 hover:text-teal-800">&larr; Zpět na úvod</a>
+            <a href="{{ route('home') }}" class="text-sm text-orange-500 hover:text-orange-600">&larr; Zpět na úvod</a>
 
-            <article class="mt-6 rounded-3xl border border-teal-100 bg-white p-6 sm:p-8">
-                <p class="text-sm text-teal-700">
+            <article class="mt-6 rounded-3xl border border-orange-100 bg-white p-6 sm:p-8">
+                <p class="text-sm text-orange-500">
                     {{ $news->published_at?->format('d.m.Y H:i') }}
                 </p>
                 <h1 class="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">{{ $news->title }}</h1>
@@ -23,7 +23,7 @@
                     <p class="mt-4 text-lg leading-8 text-stone-700">{{ $news->excerpt }}</p>
                 @endif
 
-                <div class="prose pteal-stone mt-8 max-w-none">
+                <div class="prose prose-stone mt-8 max-w-none">
                     {!! nl2br(e($news->content)) !!}
                 </div>
             </article>

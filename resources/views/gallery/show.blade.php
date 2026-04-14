@@ -10,7 +10,7 @@
     </head>
     <body class="bg-stone-50 text-stone-900 antialiased">
         <main class="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
-            <a href="{{ route('gallery.index') }}" class="text-sm text-teal-700 hover:text-teal-800">&larr; Zpět na galerii</a>
+            <a href="{{ route('gallery.index') }}" class="text-sm text-orange-500 hover:text-orange-600">&larr; Zpět na galerii</a>
             <h1 class="mt-4 text-3xl font-semibold">{{ $album->title }}</h1>
             @if ($album->description)
                 <p class="mt-2 max-w-3xl text-stone-700">{{ $album->description }}</p>
@@ -29,7 +29,7 @@
                     <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                         @foreach ($photos as $photo)
                             @php $idx = $gridPhotoIndex++; @endphp
-                            <figure class="rounded-xl border border-teal-100 bg-white p-2 shadow-sm">
+                            <figure class="rounded-xl border border-orange-100 bg-white p-2 shadow-sm">
                                 <img
                                     src="{{ Storage::disk('public')->url($photo->image_path) }}"
                                     alt="{{ $photo->alt_text ?: $photo->title ?: $album->title }}"

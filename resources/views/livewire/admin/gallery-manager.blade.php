@@ -41,7 +41,7 @@
                         <input wire:model="photo_is_published" type="checkbox" class="rounded border-gray-300">
                         Publikovana fotka
                     </label>
-                    <button type="submit" class="rounded-lg bg-teal-700 px-4 py-2 text-sm font-medium text-white hover:bg-teal-800">Nahrat fotku</button>
+                    <button type="submit" class="rounded-lg bg-orange-500 px-4 py-2 text-sm font-medium text-white hover:bg-orange-600">Nahrat fotku</button>
                 </form>
             </div>
         </div>
