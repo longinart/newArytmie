@@ -168,8 +168,8 @@
                             class="h-full w-full object-cover transition duration-300 group-hover:scale-105"
                             loading="lazy"
                             decoding="async"
-                            width="900"
-                            height="900"
+                            width="480"
+                            height="480"
                         >
                     </a>
                 @endforeach

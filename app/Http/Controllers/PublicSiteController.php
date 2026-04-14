@@ -141,15 +141,19 @@ class PublicSiteController extends Controller
             ->groupBy(fn ($photo) => $photo->taken_at?->format('Y') ?? 'Nezařazeno')
             ->sortKeysDesc();
 
-        $lightboxPhotos = $photoPaginator->getCollection()
-            ->map(fn (Photo $photo) => [
-                'full' => Storage::disk('public')->url($photo->image_path),
-                'thumb' => route('gallery.photo.thumb', $photo),
-                'alt' => $photo->alt_text ?: ($photo->title ?: $album->title),
-                'caption' => $photo->caption ?? '',
-            ])
-            ->values()
-            ->all();
+        // Stejné pořadí jako v šabloně (rok sestupně → fotky v rámci roku), jinak index v mřížce nesedí s lightboxem.
+        $lightboxPhotos = [];
+        foreach ($photosByYear as $photosInYear) {
+            foreach ($photosInYear as $photo) {
+                $lightboxPhotos[] = [
+                    'large' => route('gallery.photo.large', $photo),
+                    'full' => Storage::disk('public')->url($photo->image_path),
+                    'thumb' => route('gallery.photo.thumb', $photo),
+                    'alt' => $photo->alt_text ?: ($photo->title ?: $album->title),
+                    'caption' => $photo->caption ?? '',
+                ];
+            }
+        }
 
         return view('gallery.show', compact('album', 'photosByYear', 'photoPaginator', 'lightboxPhotos'));
     }

@@ -5,7 +5,7 @@ import Alpine from 'alpinejs';
 /**
  * Fotogalerie alba: náhledy v mřížce + lightbox (klik, šipky, Escape).
  *
- * @param {Array<{ full: string, thumb: string, alt: string, caption: string }>} photos
+ * @param {Array<{ large: string, full: string, thumb: string, alt: string, caption: string }>} photos
  */
 window.albumGallery = function albumGallery(photos) {
     return {
@@ -13,7 +13,7 @@ window.albumGallery = function albumGallery(photos) {
         open: false,
         i: 0,
         openAt(index) {
-            this.i = index;
+            this.i = Number(index);
             this.open = true;
             document.body.style.overflow = 'hidden';
         },

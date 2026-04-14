@@ -45,15 +45,15 @@
                                         alt="{{ $photo->alt_text ?: $photo->title ?: $album->title }}"
                                         class="aspect-[4/3] w-full object-cover"
                                         data-retryable-image
-                                        loading="{{ $idx < 12 ? 'eager' : 'lazy' }}"
-                                        decoding="{{ $idx < 12 ? 'sync' : 'async' }}"
-                                        @if ($idx < 4)
+                                        loading="{{ $idx < 4 ? 'eager' : 'lazy' }}"
+                                        decoding="{{ $idx < 4 ? 'sync' : 'async' }}"
+                                        @if ($idx < 2)
                                             fetchpriority="high"
-                                        @elseif ($idx >= 12)
+                                        @elseif ($idx >= 8)
                                             fetchpriority="low"
                                         @endif
-                                        width="900"
-                                        height="675"
+                                        width="480"
+                                        height="360"
                                     >
                                 </button>
                                 @if ($photo->caption)
@@ -114,9 +114,12 @@
 
                     <div class="relative z-[101] flex max-h-[90vh] max-w-[min(100vw-2rem,1200px)] flex-col items-center justify-center">
                         <img
-                            x-bind:src="photos[i]?.full"
-                            x-bind:alt="photos[i]?.alt"
+                            x-bind:key="'lb-' + i + '-' + (photos[i] ? (photos[i].large || photos[i].full) : '')"
+                            x-bind:src="photos[i] ? (photos[i].large || photos[i].full) : ''"
+                            x-bind:alt="photos[i] ? photos[i].alt : ''"
                             class="max-h-[min(78vh,900px)] w-auto max-w-full rounded-lg object-contain shadow-2xl"
+                            loading="eager"
+                            decoding="async"
                             @click.stop
                         >
                         <p

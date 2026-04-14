@@ -16,6 +16,8 @@ Route::get('/koncerty/{slug}', [PublicSiteController::class, 'showConcert'])->na
 Route::get('/galerie', [PublicSiteController::class, 'gallery'])->name('gallery.index');
 Route::get('/galerie/fotka/{photo}/nahled', [GalleryPhotoController::class, 'thumbnail'])
     ->name('gallery.photo.thumb');
+Route::get('/galerie/fotka/{photo}/velke', [GalleryPhotoController::class, 'large'])
+    ->name('gallery.photo.large');
 Route::get('/galerie/{slug}', [PublicSiteController::class, 'showAlbum'])->name('gallery.show');
 
 Route::post('/kontakt', [ContactController::class, 'store'])
