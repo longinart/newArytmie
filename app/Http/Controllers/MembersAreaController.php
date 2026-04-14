@@ -9,7 +9,7 @@ use Illuminate\View\View;
 
 class MembersAreaController extends Controller
 {
-    public function show(Request $request): View
+    public function show(Request $request): View|RedirectResponse
     {
         abort_unless(config('members.enabled'), 404);
 
