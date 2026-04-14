@@ -48,7 +48,7 @@ class GalleryPhotoController extends Controller
         $cacheFile = $cacheDir.DIRECTORY_SEPARATOR.hash('sha256', $variant.'|'.$mtime.'|'.$absolute.'|'.$photo->id).'.jpg';
 
         if ($this->isUsableJpegCacheFile($cacheFile)) {
-            return response()->file($cacheFile, $this->jpegResponseHeaders($variant));
+            return $this->jpegBodyResponseFromPath($cacheFile, $this->jpegResponseHeaders($variant));
         }
 
         if (is_file($cacheFile)) {
@@ -80,7 +80,18 @@ class GalleryPhotoController extends Controller
             return response($encoded, 200, $this->jpegResponseHeaders($variant));
         }
 
-        return response()->file($cacheFile, $this->jpegResponseHeaders($variant));
+        return $this->jpegBodyResponseFromPath($cacheFile, $this->jpegResponseHeaders($variant));
+    }
+
+    /**
+     * Na některých hostinzích BinaryFileResponse (sendfile / open_basedir) pro soubory mimo public nefunguje.
+     */
+    private function jpegBodyResponseFromPath(string $absolutePath, array $headers): Response
+    {
+        $binary = @file_get_contents($absolutePath);
+        abort_if($binary === false || strlen($binary) < 64, 503);
+
+        return response($binary, 200, $headers);
     }
 
     /**
@@ -101,13 +112,18 @@ class GalleryPhotoController extends Controller
      */
     private function isUsableJpegCacheFile(string $cacheFile): bool
     {
-        if (! is_file($cacheFile) || filesize($cacheFile) < 64) {
+        if (! is_file($cacheFile)) {
             return false;
         }
 
-        $info = @getimagesize($cacheFile);
+        $size = filesize($cacheFile);
+        if ($size === false || $size < 64) {
+            return false;
+        }
 
-        return $info !== false && ($info[2] ?? 0) === IMAGETYPE_JPEG;
+        $head = @file_get_contents($cacheFile, false, null, 0, 16);
+
+        return is_string($head) && str_starts_with($head, "\xFF\xD8\xFF");
     }
 
     /**

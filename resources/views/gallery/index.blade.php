@@ -41,6 +41,7 @@
                                 alt="{{ $album->title }}"
                                 class="h-48 w-full rounded-xl object-cover"
                                 data-retryable-image
+                                data-fallback-src="{{ Storage::disk('public')->url($coverThumbPhoto->image_path) }}"
                                 loading="{{ $albumCardIndex < 6 ? 'eager' : 'lazy' }}"
                                 decoding="{{ $albumCardIndex < 6 ? 'sync' : 'async' }}"
                                 @if ($albumCardIndex < 3)
@@ -98,6 +99,14 @@
                     img.dataset.retryCount = '0';
 
                     img.addEventListener('error', () => {
+                        const fallback = img.dataset.fallbackSrc;
+                        if (fallback && img.dataset.fallbackDone !== '1') {
+                            img.dataset.fallbackDone = '1';
+                            img.src = fallback;
+
+                            return;
+                        }
+
                         const currentRetries = Number(img.dataset.retryCount || '0');
                         if (currentRetries >= maxRetries) {
                             return;

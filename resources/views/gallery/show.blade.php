@@ -45,6 +45,7 @@
                                         alt="{{ $photo->alt_text ?: $photo->title ?: $album->title }}"
                                         class="aspect-[4/3] w-full object-cover"
                                         data-retryable-image
+                                        data-fallback-src="{{ Storage::disk('public')->url($photo->image_path) }}"
                                         loading="{{ $idx === 0 ? 'eager' : 'lazy' }}"
                                         decoding="async"
                                         @if ($idx === 0)
@@ -144,6 +145,14 @@
                     img.dataset.retryCount = '0';
 
                     img.addEventListener('error', () => {
+                        const fallback = img.dataset.fallbackSrc;
+                        if (fallback && img.dataset.fallbackDone !== '1') {
+                            img.dataset.fallbackDone = '1';
+                            img.src = fallback;
+
+                            return;
+                        }
+
                         const currentRetries = Number(img.dataset.retryCount || '0');
                         if (currentRetries >= maxRetries) {
                             return;

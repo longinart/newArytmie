@@ -172,6 +172,8 @@
                             src="{{ route('gallery.photo.thumb', $photo) }}"
                             alt="{{ $photo->alt_text ?: ($photo->title ?: $photo->album->title) }}"
                             class="pointer-events-none h-full w-full object-cover transition duration-300 group-hover:scale-105"
+                            data-home-gallery-thumb
+                            data-fallback-src="{{ Storage::disk('public')->url($photo->image_path) }}"
                             loading="lazy"
                             decoding="async"
                             width="320"
@@ -338,4 +340,18 @@
             </div>
         </div>
     </section>
+
+    @push('scripts')
+        <script>
+            document.querySelectorAll('img[data-home-gallery-thumb]').forEach((img) => {
+                img.addEventListener('error', () => {
+                    const fb = img.dataset.fallbackSrc;
+                    if (fb && img.dataset.fallbackDone !== '1') {
+                        img.dataset.fallbackDone = '1';
+                        img.src = fb;
+                    }
+                });
+            });
+        </script>
+    @endpush
 @endsection
