@@ -37,6 +37,7 @@
                                 src="{{ Storage::disk('public')->url($cover) }}"
                                 alt="{{ $album->title }}"
                                 class="h-48 w-full rounded-xl object-cover"
+                                data-retryable-image
                                 loading="{{ $albumCardIndex < 6 ? 'eager' : 'lazy' }}"
                                 decoding="{{ $albumCardIndex < 6 ? 'sync' : 'async' }}"
                                 @if ($albumCardIndex < 3)
@@ -68,5 +69,35 @@
                 @endforelse
             </div>
         </main>
+        <script>
+            (() => {
+                const maxRetries = 2;
+                const baseDelayMs = 300;
+
+                document.querySelectorAll('img[data-retryable-image]').forEach((img) => {
+                    const originalSrc = img.currentSrc || img.getAttribute('src');
+                    if (!originalSrc) return;
+
+                    img.dataset.retryCount = '0';
+
+                    img.addEventListener('error', () => {
+                        const currentRetries = Number(img.dataset.retryCount || '0');
+                        if (currentRetries >= maxRetries) {
+                            return;
+                        }
+
+                        const nextRetry = currentRetries + 1;
+                        img.dataset.retryCount = String(nextRetry);
+
+                        const retryUrl = new URL(originalSrc, window.location.origin);
+                        retryUrl.searchParams.set('_img_retry', String(nextRetry));
+
+                        setTimeout(() => {
+                            img.src = retryUrl.toString();
+                        }, baseDelayMs * nextRetry);
+                    });
+                });
+            })();
+        </script>
     </body>
 </html>

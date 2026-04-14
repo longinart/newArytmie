@@ -34,6 +34,7 @@
                                     src="{{ Storage::disk('public')->url($photo->image_path) }}"
                                     alt="{{ $photo->alt_text ?: $photo->title ?: $album->title }}"
                                     class="h-60 w-full rounded-lg object-cover"
+                                    data-retryable-image
                                     loading="{{ $idx < 12 ? 'eager' : 'lazy' }}"
                                     decoding="{{ $idx < 12 ? 'sync' : 'async' }}"
                                     @if ($idx < 4)
@@ -61,5 +62,35 @@
                 </nav>
             @endif
         </main>
+        <script>
+            (() => {
+                const maxRetries = 2;
+                const baseDelayMs = 300;
+
+                document.querySelectorAll('img[data-retryable-image]').forEach((img) => {
+                    const originalSrc = img.currentSrc || img.getAttribute('src');
+                    if (!originalSrc) return;
+
+                    img.dataset.retryCount = '0';
+
+                    img.addEventListener('error', () => {
+                        const currentRetries = Number(img.dataset.retryCount || '0');
+                        if (currentRetries >= maxRetries) {
+                            return;
+                        }
+
+                        const nextRetry = currentRetries + 1;
+                        img.dataset.retryCount = String(nextRetry);
+
+                        const retryUrl = new URL(originalSrc, window.location.origin);
+                        retryUrl.searchParams.set('_img_retry', String(nextRetry));
+
+                        setTimeout(() => {
+                            img.src = retryUrl.toString();
+                        }, baseDelayMs * nextRetry);
+                    });
+                });
+            })();
+        </script>
     </body>
 </html>
