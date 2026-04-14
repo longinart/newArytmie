@@ -5,7 +5,7 @@
         ['route' => 'members.noty', 'label' => 'Noty'],
     ];
 @endphp
-<nav class="mb-10 border-b border-slate-600/80 pb-6" aria-label="Členská sekce">
+<nav class="mb-10 mt-8 border-b border-slate-600/80 pb-6 sm:mt-10" aria-label="Členská sekce">
     <ul class="flex flex-wrap gap-2 sm:gap-3">
         @foreach ($links as $link)
             <li>
