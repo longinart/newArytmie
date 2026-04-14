@@ -47,7 +47,17 @@ class PublicSiteController extends Controller
                 ->get();
         }
 
-        return view('welcome', compact('newsItems', 'concertItems', 'galleryPreviewPhotos'));
+        $galleryPreviewLightbox = $galleryPreviewPhotos
+            ->map(fn (Photo $photo) => [
+                'large' => route('gallery.photo.large', $photo),
+                'full' => Storage::disk('public')->url($photo->image_path),
+                'alt' => $photo->alt_text ?: ($photo->title ?: $photo->album->title),
+                'caption' => $photo->caption ?? '',
+            ])
+            ->values()
+            ->all();
+
+        return view('welcome', compact('newsItems', 'concertItems', 'galleryPreviewPhotos', 'galleryPreviewLightbox'));
     }
 
     public function about()

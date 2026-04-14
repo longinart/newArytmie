@@ -63,6 +63,56 @@ window.albumGallery = function albumGallery(photos) {
     };
 };
 
+/**
+ * Úvodní stránka — náhodné fotky: jedna zvětšená verze, jen zavřít (bez šipek / listování).
+ *
+ * @param {Array<{ large: string, full: string, alt: string, caption: string }>} photos
+ */
+window.homeGalleryPeek = function homeGalleryPeek(photos) {
+    return {
+        photos: photos || [],
+        open: false,
+        i: 0,
+        openAt(index) {
+            if (this.photos.length === 0) {
+                return;
+            }
+            this.i = Number(index);
+            queueMicrotask(() => {
+                this.open = true;
+                document.body.style.overflow = 'hidden';
+            });
+        },
+        close() {
+            this.open = false;
+            document.body.style.overflow = '';
+        },
+        peekSrc() {
+            const p = this.photos[this.i];
+
+            return p ? (p.large || p.full) : '';
+        },
+        peekAlt() {
+            const p = this.photos[this.i];
+
+            return p ? (p.alt || '') : '';
+        },
+        peekCaption() {
+            const p = this.photos[this.i];
+
+            return p ? (p.caption || '') : '';
+        },
+        handleKey(e) {
+            if (!this.open) {
+                return;
+            }
+            if (e.key === 'Escape') {
+                this.close();
+            }
+        },
+    };
+};
+
 window.Alpine = Alpine;
 
 Alpine.start();

@@ -150,28 +150,34 @@
     </section>
 
     <section id="galerie" class="bg-slate-800">
-        <div class="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8">
+        <div
+            class="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8"
+            x-data="homeGalleryPeek(@js($galleryPreviewLightbox))"
+            @keydown.window="handleKey($event)"
+        >
             <p class="text-sm font-semibold uppercase tracking-[0.3em] text-orange-500">Galerie</p>
             <h2 class="mt-3 text-3xl font-semibold tracking-tight text-white">Momentky z koncertů a zkoušek</h2>
             <p class="mt-3 max-w-2xl text-sm leading-6 text-slate-300">
-                Náhodný výběr z publikovaných fotek v albech — kompletní fotogalerii otevřete odkazem níže.
+                Náhodný výběr z publikovaných fotek v albech — kliknutím zvětšíte náhled (jako v galerii). Kompletní alba otevřete odkazem níže.
             </p>
             <div class="mt-8 grid grid-cols-2 gap-4 lg:grid-cols-4">
                 @foreach ($galleryPreviewPhotos as $photo)
-                    <a
-                        href="{{ route('gallery.show', $photo->album->slug) }}"
-                        class="group relative aspect-square overflow-hidden rounded-3xl border border-slate-600/80 bg-slate-900/50 shadow-sm ring-0 transition hover:ring-2 hover:ring-orange-400/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-400"
+                    <button
+                        type="button"
+                        class="group relative aspect-square w-full cursor-zoom-in overflow-hidden rounded-3xl border border-slate-600/80 bg-slate-900/50 text-left shadow-sm ring-0 transition hover:ring-2 hover:ring-orange-400/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-400"
+                        @click="openAt({{ $loop->index }})"
+                        aria-label="Zvětšit fotografii"
                     >
                         <img
                             src="{{ route('gallery.photo.thumb', $photo) }}"
                             alt="{{ $photo->alt_text ?: ($photo->title ?: $photo->album->title) }}"
-                            class="h-full w-full object-cover transition duration-300 group-hover:scale-105"
+                            class="pointer-events-none h-full w-full object-cover transition duration-300 group-hover:scale-105"
                             loading="lazy"
                             decoding="async"
                             width="320"
                             height="320"
                         >
-                    </a>
+                    </button>
                 @endforeach
                 @for ($g = $galleryPreviewPhotos->count(); $g < 4; $g++)
                     <div
@@ -185,6 +191,46 @@
             <a href="{{ route('gallery.index') }}" class="mt-8 inline-block text-sm font-semibold text-orange-400 transition hover:text-orange-300">
                 Otevřít celou galerii &rarr;
             </a>
+
+            <template x-teleport="body">
+                <template x-if="open">
+                    <div
+                        class="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-8"
+                        x-transition
+                        role="dialog"
+                        aria-modal="true"
+                        aria-label="Zvětšená fotografie"
+                    >
+                        <div class="absolute inset-0 bg-black/90" @click="close()" aria-hidden="true"></div>
+
+                        <button
+                            type="button"
+                            class="absolute right-2 top-2 z-[102] rounded-full border border-white/20 bg-slate-900/90 px-3 py-1.5 text-sm font-semibold text-white shadow transition hover:bg-slate-800 sm:right-4 sm:top-4"
+                            @click.stop="close()"
+                        >
+                            Zavřít (Esc)
+                        </button>
+
+                        <div class="relative z-[101] flex max-h-[90vh] max-w-[min(100vw-2rem,1200px)] flex-col items-center justify-center">
+                            <img
+                                x-bind:key="'home-lb-' + i"
+                                :src="peekSrc()"
+                                :alt="peekAlt()"
+                                class="max-h-[min(78vh,900px)] w-auto max-w-full rounded-lg object-contain shadow-2xl"
+                                loading="eager"
+                                decoding="async"
+                                referrerpolicy="no-referrer-when-downgrade"
+                                @click.stop
+                            >
+                            <p
+                                x-show="peekCaption() !== ''"
+                                x-text="peekCaption()"
+                                class="mt-4 max-w-2xl text-center text-sm leading-relaxed text-slate-200"
+                            ></p>
+                        </div>
+                    </div>
+                </template>
+            </template>
         </div>
     </section>
 
