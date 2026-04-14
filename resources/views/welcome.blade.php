@@ -80,17 +80,9 @@
 
     <section id="aktuality" class="bg-slate-800">
         <div class="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8">
-            <div class="flex items-end justify-between gap-6">
-                <div>
-                    <p class="text-sm font-semibold uppercase tracking-[0.3em] text-orange-400">Aktuality</p>
-                    <h2 class="mt-3 text-3xl font-semibold tracking-tight text-white">Novinky spravované z administrace</h2>
-                </div>
-                <p class="hidden max-w-md text-sm text-slate-300 md:block">
-                    Tady budou postupně přibývat články a oznámení načítané z databáze.
-                </p>
-            </div>
+            <h2 class="text-4xl font-semibold tracking-tight text-white sm:text-5xl">Aktuality</h2>
 
-            <div class="mt-8 grid gap-6 md:grid-cols-3">
+            <div class="mt-10 grid gap-6 md:grid-cols-3">
                 @forelse ($newsItems as $news)
                     <article class="rounded-3xl border border-slate-600/80 bg-slate-900/50 p-6 shadow-sm">
                         <p class="text-sm text-orange-400">
