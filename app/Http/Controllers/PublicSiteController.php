@@ -109,7 +109,9 @@ class PublicSiteController extends Controller
             ->where('is_published', true)
             ->firstOrFail();
 
-        $perPage = max(12, min(96, (int) $request->query('per_page', 48)));
+        // Shared hosting can throttle many parallel image responses.
+        // Smaller pages are more reliable on first render, especially on mobile.
+        $perPage = max(12, min(60, (int) $request->query('per_page', 24)));
 
         $photoPaginator = $album->photos()
             ->where('is_published', true)
