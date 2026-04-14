@@ -10,16 +10,16 @@
 @section('content')
     <section class="bg-gradient-to-b from-slate-700 via-slate-800 to-slate-900">
         <div class="mx-auto grid max-w-6xl gap-10 px-4 py-16 sm:px-6 lg:grid-cols-[1.2fr_0.8fr] lg:px-8 lg:py-24">
-            <div class="space-y-6">
-                <p class="text-sm font-semibold uppercase tracking-[0.3em] text-orange-400">Nový web ve výstavbě</p>
+            <div id="o-sboru" class="scroll-mt-24 space-y-6">
+                <p class="text-sm font-semibold uppercase tracking-[0.3em] text-orange-400">O sboru</p>
                 <h1 class="max-w-3xl text-4xl font-semibold tracking-tight text-white sm:text-5xl">
-                    Hudba, která spojuje ženské hlasy, prostor a emoci.
+                    Komorní ženský sbor s prostorem pro detail
                 </h1>
-                <p class="max-w-2xl text-lg leading-8 text-slate-200">
-                    Připravujeme nový web ženského komorního sboru Arytmie Praha s přehlednými aktualitami,
-                    kalendářem koncertů, galerií a jednoduchou administrací pro správu obsahu.
+                <p class="max-w-2xl text-lg leading-8 text-stone-100">
+                    Ženský komorní sbor Arytmie Praha sdružuje zpěvačky, které rády objevují repertoár od renesance po současnost
+                    a dbají na sjednocený zvuk i výraz v menším obsazení.
                 </p>
-                <div class="flex flex-col gap-3 sm:flex-row">
+                <div class="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
                     <a
                         href="#koncerty"
                         class="rounded-full bg-orange-500 px-6 py-3 text-center text-sm font-semibold text-white transition hover:bg-orange-600"
@@ -32,37 +32,49 @@
                     >
                         Kontaktovat sbor
                     </a>
+                    <a
+                        href="{{ route('about') }}"
+                        class="text-center text-sm font-semibold text-orange-200 underline decoration-orange-400/50 underline-offset-4 transition hover:text-white sm:text-left"
+                    >
+                        Více o sboru &rarr;
+                    </a>
                 </div>
             </div>
 
-            <div class="rounded-3xl border border-orange-200 bg-white p-6 shadow-sm">
-                <p class="text-sm font-semibold uppercase tracking-[0.2em] text-orange-500">Co už je připraveno</p>
-                <ul class="mt-4 space-y-3 text-sm text-stone-700">
-                    <li class="rounded-2xl bg-orange-50 px-4 py-3">Laravel 13 + Livewire 4 běží na `newarytmie.test`.</li>
-                    <li class="rounded-2xl bg-orange-50 px-4 py-3">Databáze je přepnutá na MySQL v Laragonu.</li>
-                    <li class="rounded-2xl bg-orange-50 px-4 py-3">Hotový je základ datového modelu pro obsah, koncerty i galerii.</li>
-                </ul>
-            </div>
-        </div>
-    </section>
-
-    <section id="o-sboru" class="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8">
-        <div class="grid gap-8 lg:grid-cols-2">
-            <div>
-                <p class="text-sm font-semibold uppercase tracking-[0.3em] text-orange-500">O sboru</p>
-                <h2 class="mt-3 text-3xl font-semibold tracking-tight text-white">Komorní ženský sbor s prostorem pro detail</h2>
-            </div>
-            <div class="space-y-4 text-stone-100">
-                <p class="leading-7 text-stone-100">
-                    Ženský komorní sbor Arytmie Praha sdružuje zpěvačky, které rády objevují repertoár od renesance po současnost
-                    a dbají na sjednocený zvuk i výraz v menším obsazení.
-                </p>
-                <p>
-                    <a href="{{ route('about') }}" class="font-semibold text-orange-300 transition hover:text-orange-200">
-                        Celý text o sboru &rarr;
+            <aside class="rounded-3xl border border-orange-200/25 bg-slate-900/55 p-6 shadow-lg backdrop-blur-sm">
+                @if ($concertItems->isNotEmpty())
+                    @php($nextConcert = $concertItems->first())
+                    <p class="text-sm font-semibold uppercase tracking-[0.2em] text-orange-300">Nejbližší koncert</p>
+                    <p class="mt-4 text-sm text-orange-200/90">{{ $nextConcert->starts_at?->format('d.m.Y H:i') }}</p>
+                    <p class="mt-2 text-lg font-semibold leading-snug text-white">
+                        <a href="{{ route('concerts.show', $nextConcert->slug) }}" class="transition hover:text-orange-200">
+                            {{ $nextConcert->title }}
+                        </a>
+                    </p>
+                    <p class="mt-2 text-sm text-slate-300">{{ $nextConcert->venue_name }}, {{ $nextConcert->city }}</p>
+                    <a
+                        href="#koncerty"
+                        class="mt-6 inline-block text-sm font-semibold text-orange-400 transition hover:text-orange-300"
+                    >
+                        Další termíny &rarr;
                     </a>
-                </p>
-            </div>
+                @else
+                    <p class="text-sm font-semibold uppercase tracking-[0.2em] text-orange-300">Z hudby</p>
+                    <blockquote class="mt-4 border-l-4 border-orange-400/80 pl-4 text-base leading-7 text-slate-200">
+                        <p>„Kdo chce pochopit hudbu, nepotřebuje ani tak sluch, jako srdce.“</p>
+                        <footer class="mt-3 text-sm font-medium text-orange-200/90">Jiří Mahen</footer>
+                    </blockquote>
+                    <p class="mt-6 text-sm leading-6 text-slate-400">
+                        Koncertní termíny průběžně doplňujeme — mrkněte do sekce Koncerty níže na stránce.
+                    </p>
+                    <a
+                        href="#koncerty"
+                        class="mt-4 inline-block text-sm font-semibold text-orange-400 transition hover:text-orange-300"
+                    >
+                        Přejít na koncerty &rarr;
+                    </a>
+                @endif
+            </aside>
         </div>
     </section>
 
