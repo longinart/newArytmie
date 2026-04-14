@@ -19,7 +19,8 @@
 @endphp
 
 @if ($hasHeroDesktop || $hasHeroMobile)
-    <div class="w-full bg-stone-200">
+    {{-- Spodní / horní přechod do barvy stránky — bez úpravy samotného souboru fotky. --}}
+    <div class="relative w-full overflow-hidden bg-stone-200">
         <picture>
             @if ($hasHeroMobile)
                 <source media="(max-width: 768px)" srcset="{{ asset($heroMobileRel) }}" />
@@ -36,5 +37,13 @@
                 decoding="async"
             />
         </picture>
+        <div
+            class="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-20 bg-gradient-to-b from-transparent via-slate-800/60 to-slate-700 sm:h-28 md:h-36"
+            aria-hidden="true"
+        ></div>
+        <div
+            class="pointer-events-none absolute inset-x-0 top-0 z-10 h-14 bg-gradient-to-b from-slate-900/55 to-transparent sm:h-20"
+            aria-hidden="true"
+        ></div>
     </div>
 @endif
