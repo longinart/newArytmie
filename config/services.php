@@ -35,4 +35,14 @@ return [
         ],
     ],
 
+    /*
+    | Cloudflare Turnstile (kontaktní formulář)
+    | https://developers.cloudflare.com/turnstile/
+    */
+    'turnstile' => [
+        'enabled' => (bool) env('TURNSTILE_ENABLED', false),
+        'site_key' => env('TURNSTILE_SITE_KEY'),
+        'secret_key' => env('TURNSTILE_SECRET_KEY'),
+    ],
+
 ];
