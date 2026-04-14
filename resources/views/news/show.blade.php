@@ -23,8 +23,8 @@
                     <p class="mt-4 text-lg leading-8 text-stone-700">{{ $news->excerpt }}</p>
                 @endif
 
-                <div class="prose prose-stone mt-8 max-w-none">
-                    {!! nl2br(e($news->content)) !!}
+                <div class="prose prose-stone mt-8 max-w-none prose-a:text-orange-600 prose-a:no-underline hover:prose-a:underline">
+                    {!! Str::markdown($news->content, ['html_input' => 'strip']) !!}
                 </div>
             </article>
         </main>
