@@ -45,4 +45,14 @@ return [
         'secret_key' => env('TURNSTILE_SECRET_KEY'),
     ],
 
+    /*
+    | Veřejný Google kalendář — embed na úvodní stránce (sekce Koncerty).
+    | ID kalendáře najdete v Google Kalendář → ⚙ u kalendáře → Nastavení a sdílení → Integrace kalendáře.
+    */
+    'google_calendar' => [
+        'embed_src' => env('GOOGLE_CALENDAR_EMBED_SRC'),
+        'timezone' => env('GOOGLE_CALENDAR_TIMEZONE', 'Europe/Prague'),
+        'mode' => env('GOOGLE_CALENDAR_MODE', 'AGENDA'),
+    ],
+
 ];

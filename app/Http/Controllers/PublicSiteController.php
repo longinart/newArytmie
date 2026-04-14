@@ -6,6 +6,7 @@ use App\Models\Album;
 use App\Models\Concert;
 use App\Models\News;
 use App\Models\Photo;
+use App\Support\GoogleCalendarEmbed;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Schema;
@@ -57,7 +58,15 @@ class PublicSiteController extends Controller
             ->values()
             ->all();
 
-        return view('welcome', compact('newsItems', 'concertItems', 'galleryPreviewPhotos', 'galleryPreviewLightbox'));
+        $googleCalendarEmbedUrl = GoogleCalendarEmbed::embedUrl();
+
+        return view('welcome', compact(
+            'newsItems',
+            'concertItems',
+            'galleryPreviewPhotos',
+            'galleryPreviewLightbox',
+            'googleCalendarEmbedUrl',
+        ));
     }
 
     public function about()

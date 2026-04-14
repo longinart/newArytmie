@@ -146,6 +146,24 @@
                     </div>
                 @endforelse
             </div>
+
+            @if (! empty($googleCalendarEmbedUrl))
+                <div class="mt-10 border-t border-white/10 pt-10">
+                    <p class="text-sm font-semibold text-orange-200">Kalendář koncertů</p>
+                    <p class="mt-1 text-sm text-orange-100/90">
+                        Oficiální termíny ve veřejném Google kalendáři (můžete si přidat do telefonu z nastavení kalendáře).
+                    </p>
+                    <div class="mt-4 overflow-hidden rounded-2xl border border-white/15 bg-white shadow-lg">
+                        <iframe
+                            class="h-[min(720px,75vh)] w-full border-0"
+                            src="{{ $googleCalendarEmbedUrl }}"
+                            title="Kalendář koncertů — Google Calendar"
+                            loading="lazy"
+                            referrerpolicy="no-referrer-when-downgrade"
+                        ></iframe>
+                    </div>
+                </div>
+            @endif
         </div>
     </section>
 
