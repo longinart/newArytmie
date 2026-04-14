@@ -16,7 +16,7 @@ class GalleryPhotoController extends Controller
      */
     public function thumbnail(Photo $photo): Response|RedirectResponse
     {
-        return $this->serveScaledJpeg($photo, 'thumb', 480, 68);
+        return $this->serveScaledJpeg($photo, 'thumb-sm', 320, 52);
     }
 
     /**
@@ -24,7 +24,7 @@ class GalleryPhotoController extends Controller
      */
     public function large(Photo $photo): Response|RedirectResponse
     {
-        return $this->serveScaledJpeg($photo, 'large', 1400, 78);
+        return $this->serveScaledJpeg($photo, 'large-md', 960, 70);
     }
 
     private function serveScaledJpeg(Photo $photo, string $variant, int $maxEdge, int $jpegQuality): Response|RedirectResponse
@@ -46,7 +46,7 @@ class GalleryPhotoController extends Controller
         if (is_file($cacheFile) && filesize($cacheFile) > 0) {
             return response()->file($cacheFile, [
                 'Content-Type' => 'image/jpeg',
-                'Cache-Control' => $variant === 'thumb'
+                'Cache-Control' => str_starts_with($variant, 'thumb')
                     ? 'public, max-age=2592000'
                     : 'public, max-age=604800',
             ]);
@@ -64,7 +64,7 @@ class GalleryPhotoController extends Controller
 
         return response($encoded, 200, [
             'Content-Type' => 'image/jpeg',
-            'Cache-Control' => $variant === 'thumb'
+            'Cache-Control' => str_starts_with($variant, 'thumb')
                 ? 'public, max-age=2592000'
                 : 'public, max-age=604800',
         ]);

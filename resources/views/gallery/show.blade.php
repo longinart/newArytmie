@@ -31,7 +31,7 @@
             @forelse ($photosByYear as $year => $photos)
                 <section class="mt-8">
                     <h2 class="mb-4 text-xl font-semibold text-white">{{ $year }}</h2>
-                    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                    <div class="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
                         @foreach ($photos as $photo)
                             @php $idx = $gridPhotoIndex++; @endphp
                             <figure class="overflow-hidden rounded-xl border border-slate-600/80 bg-slate-900/50 shadow-sm">
@@ -49,11 +49,11 @@
                                         decoding="async"
                                         @if ($idx === 0)
                                             fetchpriority="high"
-                                        @elseif ($idx >= 10)
+                                        @elseif ($idx >= 8)
                                             fetchpriority="low"
                                         @endif
-                                        width="480"
-                                        height="360"
+                                        width="320"
+                                        height="240"
                                     >
                                 </button>
                                 @if ($photo->caption)

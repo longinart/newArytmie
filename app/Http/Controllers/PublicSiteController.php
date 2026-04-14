@@ -118,7 +118,7 @@ class PublicSiteController extends Controller
         ]);
     }
 
-    public function showAlbum(Request $request, string $slug)
+    public function showAlbum(string $slug)
     {
         abort_unless(Schema::hasTable('albums'), 404);
 
@@ -127,9 +127,8 @@ class PublicSiteController extends Controller
             ->where('is_published', true)
             ->firstOrFail();
 
-        // Shared hosting can throttle many parallel image responses.
-        // Smaller pages are more reliable on first render, especially on mobile.
-        $perPage = max(12, min(60, (int) $request->query('per_page', 24)));
+        // 12 fotek na stránku (mřížka 4×3) — méně paralelních náhledů, rychlejší načtení.
+        $perPage = 12;
 
         $photoPaginator = $album->photos()
             ->where('is_published', true)
