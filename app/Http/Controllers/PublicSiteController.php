@@ -37,6 +37,11 @@ class PublicSiteController extends Controller
         return view('welcome', compact('newsItems', 'concertItems'));
     }
 
+    public function about()
+    {
+        return view('about');
+    }
+
     public function showNews(string $slug)
     {
         abort_unless(Schema::hasTable('news'), 404);

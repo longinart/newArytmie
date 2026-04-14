@@ -9,6 +9,7 @@ use App\Livewire\Admin\NewsManager;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [PublicSiteController::class, 'home'])->name('home');
+Route::get('/o-nas', [PublicSiteController::class, 'about'])->name('about');
 Route::get('/aktuality/{slug}', [PublicSiteController::class, 'showNews'])->name('news.show');
 Route::get('/koncerty/{slug}', [PublicSiteController::class, 'showConcert'])->name('concerts.show');
 Route::get('/galerie', [PublicSiteController::class, 'gallery'])->name('gallery.index');
