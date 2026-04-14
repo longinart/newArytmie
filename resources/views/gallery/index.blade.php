@@ -29,6 +29,7 @@
 
             <div class="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                 @forelse ($albums as $album)
+                    @php $albumCardIndex = $loop->index; @endphp
                     <a href="{{ route('gallery.show', $album->slug) }}" class="rounded-2xl border border-teal-100 bg-white p-4 shadow-sm hover:shadow">
                         @php $cover = $album->cover_image_path ?: $album->photos->first()?->image_path; @endphp
                         @if ($cover)
@@ -36,8 +37,13 @@
                                 src="{{ Storage::disk('public')->url($cover) }}"
                                 alt="{{ $album->title }}"
                                 class="h-48 w-full rounded-xl object-cover"
-                                loading="lazy"
-                                decoding="async"
+                                loading="{{ $albumCardIndex < 6 ? 'eager' : 'lazy' }}"
+                                decoding="{{ $albumCardIndex < 6 ? 'sync' : 'async' }}"
+                                @if ($albumCardIndex < 3)
+                                    fetchpriority="high"
+                                @elseif ($albumCardIndex >= 6)
+                                    fetchpriority="low"
+                                @endif
                             >
                         @else
                             <div class="h-48 w-full rounded-xl bg-teal-100"></div>

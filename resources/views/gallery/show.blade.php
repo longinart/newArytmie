@@ -22,18 +22,25 @@
                 </p>
             @endif
 
+            @php $gridPhotoIndex = 0; @endphp
             @forelse ($photosByYear as $year => $photos)
                 <section class="mt-8">
                     <h2 class="mb-4 text-xl font-semibold">{{ $year }}</h2>
                     <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                         @foreach ($photos as $photo)
+                            @php $idx = $gridPhotoIndex++; @endphp
                             <figure class="rounded-xl border border-teal-100 bg-white p-2 shadow-sm">
                                 <img
                                     src="{{ Storage::disk('public')->url($photo->image_path) }}"
                                     alt="{{ $photo->alt_text ?: $photo->title ?: $album->title }}"
                                     class="h-60 w-full rounded-lg object-cover"
-                                    loading="lazy"
-                                    decoding="async"
+                                    loading="{{ $idx < 12 ? 'eager' : 'lazy' }}"
+                                    decoding="{{ $idx < 12 ? 'sync' : 'async' }}"
+                                    @if ($idx < 4)
+                                        fetchpriority="high"
+                                    @elseif ($idx >= 12)
+                                        fetchpriority="low"
+                                    @endif
                                 >
                                 @if ($photo->caption)
                                     <figcaption class="px-2 py-3 text-sm text-stone-700">
