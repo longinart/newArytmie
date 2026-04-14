@@ -37,12 +37,13 @@
                 decoding="async"
             />
         </picture>
+        {{-- Přechod jen v ~spodních / horních 10 % výšky banneru (od cca 90 % výšky). --}}
         <div
-            class="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-20 bg-gradient-to-b from-transparent via-slate-800/60 to-slate-700 sm:h-28 md:h-36"
+            class="pointer-events-none absolute inset-x-0 bottom-0 top-[90%] z-10 bg-gradient-to-b from-transparent to-slate-700/95"
             aria-hidden="true"
         ></div>
         <div
-            class="pointer-events-none absolute inset-x-0 top-0 z-10 h-14 bg-gradient-to-b from-slate-900/55 to-transparent sm:h-20"
+            class="pointer-events-none absolute inset-x-0 top-0 bottom-[90%] z-10 bg-gradient-to-b from-slate-900/35 to-transparent"
             aria-hidden="true"
         ></div>
     </div>
