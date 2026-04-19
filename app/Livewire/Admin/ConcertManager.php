@@ -3,35 +3,86 @@
 namespace App\Livewire\Admin;
 
 use App\Models\Concert;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Livewire\Component;
+use Livewire\WithFileUploads;
 use Livewire\WithPagination;
 
 class ConcertManager extends Component
 {
+    use WithFileUploads;
     use WithPagination;
 
     public ?int $editingId = null;
 
     public string $title = '';
+
     public string $slug = '';
+
     public string $starts_at = '';
+
     public string $ends_at = '';
+
     public string $venue_name = '';
+
     public string $venue_address = '';
+
     public string $city = '';
+
     public string $program = '';
+
     public string $description = '';
+
     public string $ticket_url = '';
+
     public string $seo_title = '';
+
     public string $seo_description = '';
+
     public bool $is_published = false;
+
+    public ?string $cover_image_path = null;
+
+    /**
+     * @var mixed
+     */
+    public $coverImage = null;
 
     public function updatedTitle(string $value): void
     {
         if ($this->editingId === null && $this->slug === '') {
             $this->slug = Str::slug($value);
         }
+    }
+
+    public function removeCoverImage(): void
+    {
+        if ($this->coverImage !== null) {
+            $this->coverImage = null;
+
+            return;
+        }
+
+        if ($this->editingId === null) {
+            $this->cover_image_path = null;
+
+            return;
+        }
+
+        $concert = Concert::find($this->editingId);
+        if ($concert === null || $concert->cover_image_path === null) {
+            $this->cover_image_path = null;
+
+            return;
+        }
+
+        $disk = Storage::disk('public');
+        if ($disk->exists($concert->cover_image_path)) {
+            $disk->delete($concert->cover_image_path);
+        }
+        $concert->update(['cover_image_path' => null]);
+        $this->cover_image_path = null;
     }
 
     public function save(): void
@@ -50,18 +101,32 @@ class ConcertManager extends Component
             'seo_title' => ['nullable', 'string', 'max:255'],
             'seo_description' => ['nullable', 'string'],
             'is_published' => ['boolean'],
+            'coverImage' => ['nullable', 'image', 'max:10240'],
         ]);
+
+        $upload = $validated['coverImage'] ?? null;
+        unset($validated['coverImage']);
 
         $slug = $validated['slug'] !== '' ? Str::slug($validated['slug']) : Str::slug($validated['title']);
         $validated['slug'] = $this->resolveUniqueSlug($slug, $this->editingId);
         $validated['ends_at'] = $validated['ends_at'] !== '' ? $validated['ends_at'] : null;
         $validated['ticket_url'] = $validated['ticket_url'] !== '' ? $validated['ticket_url'] : null;
 
-        Concert::updateOrCreate(
+        $concert = Concert::updateOrCreate(
             ['id' => $this->editingId],
             $validated
         );
 
+        if ($upload !== null) {
+            $disk = Storage::disk('public');
+            if ($concert->cover_image_path && $disk->exists($concert->cover_image_path)) {
+                $disk->delete($concert->cover_image_path);
+            }
+            $path = $upload->store('concert-covers/'.$concert->id, 'public');
+            $concert->update(['cover_image_path' => $path]);
+        }
+
+        $this->coverImage = null;
         $this->resetForm();
         session()->flash('status', 'Koncert byl uložen.');
     }
@@ -84,11 +149,20 @@ class ConcertManager extends Component
         $this->seo_title = $concert->seo_title ?? '';
         $this->seo_description = $concert->seo_description ?? '';
         $this->is_published = (bool) $concert->is_published;
+        $this->cover_image_path = $concert->cover_image_path;
+        $this->coverImage = null;
     }
 
     public function delete(int $id): void
     {
-        Concert::whereKey($id)->delete();
+        $concert = Concert::findOrFail($id);
+        if ($concert->cover_image_path) {
+            $disk = Storage::disk('public');
+            if ($disk->exists($concert->cover_image_path)) {
+                $disk->delete($concert->cover_image_path);
+            }
+        }
+        $concert->delete();
         $this->resetPage();
         session()->flash('status', 'Koncert byl smazán.');
     }
@@ -122,7 +196,9 @@ class ConcertManager extends Component
             'seo_title',
             'seo_description',
             'is_published',
+            'cover_image_path',
         ]);
+        $this->coverImage = null;
     }
 
     private function resolveUniqueSlug(string $slug, ?int $ignoreId = null): string

@@ -19,6 +19,7 @@ class Concert extends Model
         'city',
         'program',
         'description',
+        'cover_image_path',
         'ticket_url',
         'is_published',
         'seo_title',

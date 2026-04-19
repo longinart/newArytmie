@@ -10,53 +10,79 @@
         @endif
     </head>
     <body class="bg-slate-800 text-slate-100 antialiased">
+        @php
+            $coverLightbox = [];
+            if ($concert->cover_image_path) {
+                $coverUrl = \Illuminate\Support\Facades\Storage::disk('public')->url($concert->cover_image_path);
+                $coverLightbox = [
+                    [
+                        'large' => $coverUrl,
+                        'full' => $coverUrl,
+                        'alt' => $concert->title,
+                        'caption' => '',
+                    ],
+                ];
+            }
+        @endphp
+
         <main class="mx-auto max-w-4xl px-4 py-10 sm:px-6 lg:px-8">
             <a href="{{ route('home') }}" class="text-sm text-orange-500 hover:text-orange-600">&larr; Zpět na úvod</a>
 
-            <article class="mt-6 rounded-3xl border border-orange-100 bg-white p-6 sm:p-8">
-                <p class="text-sm text-orange-500">
-                    {{ $concert->starts_at?->format('d.m.Y H:i') }}
-                    @if($concert->ends_at)
-                        - {{ $concert->ends_at->format('d.m.Y H:i') }}
-                    @endif
-                </p>
-                <h1 class="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">{{ $concert->title }}</h1>
-                <p class="mt-3 text-stone-700">
-                    {{ $concert->venue_name }}, {{ $concert->city }}
-                    @if($concert->venue_address)
-                        - {{ $concert->venue_address }}
-                    @endif
-                </p>
+            @if ($concert->cover_image_path)
+                <div
+                    class="mt-6"
+                    x-data="homeGalleryPeek(@js($coverLightbox))"
+                    @keydown.window="handleKey($event)"
+                >
+                    <article class="rounded-3xl border border-orange-100 bg-white p-6 sm:p-8">
+                        @include('concerts.partials.concert-article-inner', ['showCover' => true])
+                    </article>
 
-                @if($concert->program)
-                    <section class="mt-8">
-                        <h2 class="text-lg font-semibold">Program</h2>
-                        <div class="aktualita-body mt-2 max-w-none text-stone-700 [&_p+p]:mt-3 [&_ul]:mt-3 [&_ul]:list-disc [&_ul]:pl-5 [&_a]:text-orange-600 [&_a]:underline">
-                            {!! \Illuminate\Support\Str::markdown($concert->program, ['html_input' => 'strip']) !!}
-                        </div>
-                    </section>
-                @endif
+                    <template x-teleport="body">
+                        <template x-if="open">
+                            <div
+                                class="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-8"
+                                x-transition
+                                role="dialog"
+                                aria-modal="true"
+                                aria-label="Zvětšená fotografie"
+                            >
+                                <div class="absolute inset-0 bg-black/90" @click="close()" aria-hidden="true"></div>
 
-                @if($concert->description)
-                    <section class="mt-8">
-                        <h2 class="text-lg font-semibold">Popis</h2>
-                        <div class="aktualita-body mt-2 max-w-none text-stone-700 [&_p+p]:mt-3 [&_ul]:mt-3 [&_ul]:list-disc [&_ul]:pl-5 [&_a]:text-orange-600 [&_a]:underline">
-                            {!! \Illuminate\Support\Str::markdown($concert->description, ['html_input' => 'strip']) !!}
-                        </div>
-                    </section>
-                @endif
+                                <button
+                                    type="button"
+                                    class="absolute right-2 top-2 z-[102] rounded-full border border-white/20 bg-slate-900/90 px-3 py-1.5 text-sm font-semibold text-white shadow transition hover:bg-slate-800 sm:right-4 sm:top-4"
+                                    @click.stop="close()"
+                                >
+                                    Zavřít (Esc)
+                                </button>
 
-                @if($concert->ticket_url)
-                    <a
-                        href="{{ $concert->ticket_url }}"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        class="mt-8 inline-flex rounded-full bg-orange-500 px-5 py-2.5 text-sm font-semibold text-white hover:bg-orange-600"
-                    >
-                        Vstupenky
-                    </a>
-                @endif
-            </article>
+                                <div class="relative z-[101] flex max-h-[90vh] max-w-[min(100vw-2rem,1200px)] flex-col items-center justify-center">
+                                    <img
+                                        x-bind:key="'concert-lb-' + i"
+                                        :src="peekSrc()"
+                                        :alt="peekAlt()"
+                                        class="max-h-[min(78vh,900px)] w-auto max-w-full rounded-lg object-contain shadow-2xl"
+                                        loading="eager"
+                                        decoding="async"
+                                        referrerpolicy="no-referrer-when-downgrade"
+                                        @click.stop
+                                    >
+                                    <p
+                                        x-show="peekCaption() !== ''"
+                                        x-text="peekCaption()"
+                                        class="mt-4 max-w-2xl text-center text-sm leading-relaxed text-slate-200"
+                                    ></p>
+                                </div>
+                            </div>
+                        </template>
+                    </template>
+                </div>
+            @else
+                <article class="mt-6 rounded-3xl border border-orange-100 bg-white p-6 sm:p-8">
+                    @include('concerts.partials.concert-article-inner', ['showCover' => false])
+                </article>
+            @endif
         </main>
     </body>
 </html>
