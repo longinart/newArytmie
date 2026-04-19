@@ -5,10 +5,12 @@ namespace App\Livewire\Admin;
 use App\Models\MemberResource;
 use App\Models\MemberResourceFile;
 use Illuminate\Support\Facades\Storage;
+use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Livewire\WithPagination;
 
+#[Layout('layouts.app')]
 class MemberResourcesManager extends Component
 {
     use WithFileUploads;
@@ -24,8 +26,12 @@ class MemberResourcesManager extends Component
 
     public int $sort_order = 0;
 
-    /** @var array<int, mixed> */
-    public array $uploadFiles = [];
+    /**
+     * Nesmí být typované jako array — Livewire + více souborů může na některých serverech spadnout při dehydrataci.
+     *
+     * @var array<int, mixed>
+     */
+    public $uploadFiles = [];
 
     public function mount(): void
     {
@@ -140,6 +146,6 @@ class MemberResourcesManager extends Component
 
         return view('livewire.admin.member-resources-manager', [
             'items' => $items,
-        ])->layout('layouts.app');
+        ]);
     }
 }
