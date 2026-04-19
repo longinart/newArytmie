@@ -2,7 +2,12 @@
     <div class="mx-auto max-w-7xl space-y-6 px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between">
             <h1 class="text-2xl font-semibold text-gray-900">Správa aktualit</h1>
-            <a href="{{ url('/') }}" class="text-sm text-gray-600 hover:text-gray-900">Veřejný web</a>
+            <div class="flex flex-wrap gap-3 text-sm text-gray-600">
+                <a href="{{ url('/') }}" class="hover:text-gray-900">Veřejný web</a>
+                <a href="{{ route('admin.concerts.index') }}" class="hover:text-gray-900">Koncerty</a>
+                <a href="{{ route('admin.gallery.index') }}" class="hover:text-gray-900">Galerie</a>
+                <a href="{{ route('admin.member-materials.index') }}" class="hover:text-gray-900">Členky</a>
+            </div>
         </div>
 
         @if (session('status'))
@@ -36,8 +41,9 @@
                     </div>
 
                     <div>
-                        <label class="mb-1 block text-sm font-medium text-gray-700">Obsah</label>
-                        <textarea wire:model="content" rows="6" class="w-full rounded-lg border-gray-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500"></textarea>
+                        <label class="mb-1 block text-sm font-medium text-gray-700">Obsah (Markdown editor)</label>
+                        <p class="mb-2 text-xs text-gray-500">Formátování, odkazy, obrázky (nahrání na server), náhled v editoru. Zobrazí se na webu jako článek.</p>
+                        <x-admin.easymde-field name="content" :value="$content" :editor-key="$editingId ?? 'new'" />
                         @error('content') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
                     </div>
 

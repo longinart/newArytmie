@@ -94,7 +94,7 @@
                             </a>
                         </h3>
                         <p class="mt-3 text-sm leading-6 text-slate-300">
-                            {{ \Illuminate\Support\Str::limit($news->excerpt ?: strip_tags($news->content), 140) }}
+                            {{ \Illuminate\Support\Str::limit($news->excerpt ?: strip_tags(\Illuminate\Support\Str::markdown($news->content, ['html_input' => 'strip'])), 140) }}
                         </p>
                         <a href="{{ route('news.show', $news->slug) }}" class="mt-4 inline-block text-sm font-semibold text-orange-400 transition hover:text-orange-300">
                             Cist aktualitu &rarr;

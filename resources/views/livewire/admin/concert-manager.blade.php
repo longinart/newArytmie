@@ -2,7 +2,11 @@
     <div class="mx-auto max-w-7xl space-y-6 px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between">
             <h1 class="text-2xl font-semibold text-gray-900">Správa koncertů</h1>
-            <a href="{{ route('admin.news.index') }}" class="text-sm text-gray-600 hover:text-gray-900">Správa aktualit</a>
+            <div class="flex flex-wrap gap-3 text-sm text-gray-600">
+                <a href="{{ route('admin.news.index') }}" class="hover:text-gray-900">Aktuality</a>
+                <a href="{{ route('admin.gallery.index') }}" class="hover:text-gray-900">Galerie</a>
+                <a href="{{ route('admin.member-materials.index') }}" class="hover:text-gray-900">Členky</a>
+            </div>
         </div>
 
         @if (session('status'))
@@ -62,13 +66,15 @@
                     </div>
 
                     <div>
-                        <label class="mb-1 block text-sm font-medium text-gray-700">Program</label>
-                        <textarea wire:model="program" rows="2" class="w-full rounded-lg border-gray-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500"></textarea>
+                        <label class="mb-1 block text-sm font-medium text-gray-700">Program (Markdown)</label>
+                        <p class="mb-1 text-xs text-gray-500">Seznam skladeb, odkazy — lze formátovat jako u aktualit.</p>
+                        <x-admin.easymde-field name="program" :value="$program" :editor-key="($editingId ?? 'n').'-prog'" />
                     </div>
 
                     <div>
-                        <label class="mb-1 block text-sm font-medium text-gray-700">Popis</label>
-                        <textarea wire:model="description" rows="3" class="w-full rounded-lg border-gray-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500"></textarea>
+                        <label class="mb-1 block text-sm font-medium text-gray-700">Popis (Markdown)</label>
+                        <p class="mb-1 text-xs text-gray-500">Delší text o koncertu, obrázky z editoru.</p>
+                        <x-admin.easymde-field name="description" :value="$description" :editor-key="($editingId ?? 'n').'-desc'" />
                     </div>
 
                     <div>

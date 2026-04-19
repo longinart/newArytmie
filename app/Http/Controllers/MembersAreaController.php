@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\MemberResource;
 use App\Support\GoogleCalendarEmbed;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -61,12 +62,26 @@ class MembersAreaController extends Controller
 
     public function naslechy(): View
     {
-        return view('members.naslechy');
+        return view('members.naslechy', [
+            'resources' => MemberResource::query()
+                ->where('section', 'naslechy')
+                ->with('files')
+                ->orderBy('sort_order')
+                ->orderByDesc('id')
+                ->get(),
+        ]);
     }
 
     public function noty(): View
     {
-        return view('members.noty');
+        return view('members.noty', [
+            'resources' => MemberResource::query()
+                ->where('section', 'noty')
+                ->with('files')
+                ->orderBy('sort_order')
+                ->orderByDesc('id')
+                ->get(),
+        ]);
     }
 
     public function lock(Request $request): RedirectResponse

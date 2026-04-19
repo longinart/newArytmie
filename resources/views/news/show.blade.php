@@ -26,7 +26,7 @@
                 <div
                     class="aktualita-body mt-8 max-w-none text-base leading-7 text-slate-200 [&_p+p]:mt-4 [&_ul]:mt-4 [&_ul]:list-disc [&_ul]:pl-6 [&_ol]:mt-4 [&_ol]:list-decimal [&_ol]:pl-6 [&_li]:mt-1 [&_h2]:mt-8 [&_h2]:text-xl [&_h2]:font-semibold [&_h2]:text-white [&_h3]:mt-6 [&_h3]:text-lg [&_h3]:font-semibold [&_h3]:text-white [&_strong]:font-semibold [&_strong]:text-white [&_a]:font-medium [&_a]:text-orange-400 [&_a]:underline [&_a]:underline-offset-2 [&_a]:decoration-orange-400/40 hover:[&_a]:text-orange-300 [&_blockquote]:mt-6 [&_blockquote]:border-l-4 [&_blockquote]:border-orange-400/70 [&_blockquote]:pl-4 [&_blockquote]:italic [&_blockquote]:text-slate-300"
                 >
-                    {!! Str::markdown($news->content, ['html_input' => 'strip']) !!}
+                    {!! \Illuminate\Support\Str::markdown($news->content, ['html_input' => 'strip']) !!}
                 </div>
             </article>
         </main>

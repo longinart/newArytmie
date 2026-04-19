@@ -31,14 +31,18 @@
                 @if($concert->program)
                     <section class="mt-8">
                         <h2 class="text-lg font-semibold">Program</h2>
-                        <p class="mt-2 whitespace-pre-line text-stone-700">{{ $concert->program }}</p>
+                        <div class="aktualita-body mt-2 max-w-none text-stone-700 [&_p+p]:mt-3 [&_ul]:mt-3 [&_ul]:list-disc [&_ul]:pl-5 [&_a]:text-orange-600 [&_a]:underline">
+                            {!! \Illuminate\Support\Str::markdown($concert->program, ['html_input' => 'strip']) !!}
+                        </div>
                     </section>
                 @endif
 
                 @if($concert->description)
                     <section class="mt-8">
                         <h2 class="text-lg font-semibold">Popis</h2>
-                        <p class="mt-2 whitespace-pre-line text-stone-700">{{ $concert->description }}</p>
+                        <div class="aktualita-body mt-2 max-w-none text-stone-700 [&_p+p]:mt-3 [&_ul]:mt-3 [&_ul]:list-disc [&_ul]:pl-5 [&_a]:text-orange-600 [&_a]:underline">
+                            {!! \Illuminate\Support\Str::markdown($concert->description, ['html_input' => 'strip']) !!}
+                        </div>
                     </section>
                 @endif
 

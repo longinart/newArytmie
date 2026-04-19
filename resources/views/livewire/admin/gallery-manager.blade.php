@@ -2,7 +2,12 @@
     <div class="mx-auto max-w-7xl space-y-6 px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between">
             <h1 class="text-2xl font-semibold text-gray-900">Správa galerie</h1>
-            <a href="{{ route('gallery.index') }}" class="text-sm text-gray-600 hover:text-gray-900">Veřejná galerie</a>
+            <div class="flex flex-wrap gap-3 text-sm text-gray-600">
+                <a href="{{ route('gallery.index') }}" class="hover:text-gray-900">Veřejná galerie</a>
+                <a href="{{ route('admin.news.index') }}" class="hover:text-gray-900">Aktuality</a>
+                <a href="{{ route('admin.concerts.index') }}" class="hover:text-gray-900">Koncerty</a>
+                <a href="{{ route('admin.member-materials.index') }}" class="hover:text-gray-900">Členky</a>
+            </div>
         </div>
 
         @if (session('status'))

@@ -1,12 +1,15 @@
 <?php
 
+use App\Http\Controllers\Admin\EditorUploadController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\GalleryPhotoController;
+use App\Http\Controllers\MemberMaterialFileController;
 use App\Http\Controllers\MembersAreaController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicSiteController;
 use App\Livewire\Admin\ConcertManager;
 use App\Livewire\Admin\GalleryManager;
+use App\Livewire\Admin\MemberResourcesManager;
 use App\Livewire\Admin\NewsManager;
 use Illuminate\Support\Facades\Route;
 
@@ -31,6 +34,7 @@ Route::middleware('members.unlocked')->prefix('pro-cleny')->name('members.')->gr
     Route::get('/harmonogram', [MembersAreaController::class, 'harmonogram'])->name('harmonogram');
     Route::get('/naslechy', [MembersAreaController::class, 'naslechy'])->name('naslechy');
     Route::get('/noty', [MembersAreaController::class, 'noty'])->name('noty');
+    Route::get('/soubor/{memberResourceFile}', [MemberMaterialFileController::class, 'download'])->name('file.download');
 });
 
 Route::post('/kontakt', [ContactController::class, 'store'])
@@ -51,6 +55,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/news', NewsManager::class)->name('news.index');
     Route::get('/concerts', ConcertManager::class)->name('concerts.index');
     Route::get('/gallery', GalleryManager::class)->name('gallery.index');
+    Route::get('/member-materials', MemberResourcesManager::class)->name('member-materials.index');
+    Route::post('/editor-upload', EditorUploadController::class)->name('editor.upload');
 });
 
 require __DIR__.'/auth.php';

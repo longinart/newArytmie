@@ -25,6 +25,9 @@
                         <x-nav-link :href="route('admin.gallery.index')" :active="request()->routeIs('admin.gallery.*')">
                             {{ __('Galerie') }}
                         </x-nav-link>
+                        <x-nav-link :href="route('admin.member-materials.index')" :active="request()->routeIs('admin.member-materials.*')">
+                            Členky (noty / náslechy)
+                        </x-nav-link>
                     @endif
                 </div>
             </div>
@@ -100,6 +103,9 @@
                     </x-responsive-nav-link>
                     <x-responsive-nav-link :href="route('admin.gallery.index')" :active="request()->routeIs('admin.gallery.*')">
                         {{ __('Galerie') }}
+                    </x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('admin.member-materials.index')" :active="request()->routeIs('admin.member-materials.*')">
+                        Členky (noty / náslechy)
                     </x-responsive-nav-link>
                 @endif
                 <x-responsive-nav-link :href="route('profile.edit')">
