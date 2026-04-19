@@ -28,7 +28,8 @@
         </div>
 
         <div class="grid gap-6 lg:grid-cols-2">
-            <div class="rounded-xl bg-white p-5 shadow">
+            {{-- wire:key: při „Upravit“ musí být formulář znovu v DOMu, jinak Livewire nemění obsah textarea (morph). --}}
+            <div class="rounded-xl bg-white p-5 shadow" wire:key="mr-editor-{{ $editingId ?? 'new' }}-{{ $section }}">
                 <h2 class="mb-4 text-lg font-medium text-gray-900">
                     {{ $editingId ? 'Upravit položku' : 'Nová položka' }}
                 </h2>
@@ -36,7 +37,12 @@
                 <form wire:submit="save" class="space-y-4">
                     <div>
                         <label class="mb-1 block text-sm font-medium text-gray-700">Nadpis</label>
-                        <input wire:model="title" type="text" class="w-full rounded-lg border-gray-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                        <input
+                            wire:model="title"
+                            wire:key="mr-in-title-{{ $editingId ?? 'new' }}"
+                            type="text"
+                            class="w-full rounded-lg border-gray-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                        >
                         @error('title') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
                     </div>
 
@@ -46,13 +52,25 @@
                             Jednoduché formátování: prázdný řádek = odstavec, <code class="rounded bg-gray-100 px-1">**tučně**</code>,
                             odrážky řádky začínající <code class="rounded bg-gray-100 px-1">- </code>. Odkaz: <code class="rounded bg-gray-100 px-1">[text](https://…)</code>.
                         </p>
-                        <textarea wire:model="body_markdown" rows="14" class="w-full rounded-lg border-gray-300 font-mono text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="Volitelný úvodní text…"></textarea>
+                        <textarea
+                            wire:model="body_markdown"
+                            wire:key="mr-in-body-{{ $editingId ?? 'new' }}"
+                            rows="14"
+                            class="w-full rounded-lg border-gray-300 font-mono text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                            placeholder="Volitelný úvodní text…"
+                        ></textarea>
                         @error('body_markdown') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
                     </div>
 
                     <div>
                         <label class="mb-1 block text-sm font-medium text-gray-700">Připojit soubory (PDF, MP3, …)</label>
-                        <input wire:model="uploadFiles" type="file" multiple class="block w-full text-sm text-gray-600 file:mr-4 file:rounded-lg file:border-0 file:bg-indigo-50 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-indigo-700 hover:file:bg-indigo-100">
+                        <input
+                            wire:model="uploadFiles"
+                            wire:key="mr-in-files-{{ $editingId ?? 'new' }}"
+                            type="file"
+                            multiple
+                            class="block w-full text-sm text-gray-600 file:mr-4 file:rounded-lg file:border-0 file:bg-indigo-50 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-indigo-700 hover:file:bg-indigo-100"
+                        >
                         @error('uploadFiles.*') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
                         <p class="mt-1 text-xs text-gray-500">Max. cca 100 MB na soubor. Členky si soubor stáhnou po přihlášení heslem.</p>
                     </div>

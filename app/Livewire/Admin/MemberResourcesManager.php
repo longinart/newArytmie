@@ -96,7 +96,9 @@ class MemberResourcesManager extends Component
         $this->editingId = $r->id;
         $this->section = $r->section;
         $this->title = $r->title;
-        $this->body_markdown = $r->body_markdown ?? '';
+        $this->body_markdown = (string) ($r->body_markdown ?? '');
+        $this->uploadFiles = [];
+        $this->resetValidation();
     }
 
     public function delete(int $id): void
