@@ -24,8 +24,6 @@ class MemberResourcesManager extends Component
 
     public string $body_markdown = '';
 
-    public int $sort_order = 0;
-
     /**
      * Nesmí být typované jako array — Livewire + více souborů může na některých serverech spadnout při dehydrataci.
      *
@@ -54,23 +52,22 @@ class MemberResourcesManager extends Component
             'section' => ['required', 'in:naslechy,noty'],
             'title' => ['required', 'string', 'max:255'],
             'body_markdown' => ['nullable', 'string'],
-            'sort_order' => ['integer', 'min:0'],
             'uploadFiles' => ['nullable', 'array'],
             'uploadFiles.*' => ['file', 'max:102400'],
         ]);
 
-        $payload = [
-            'section' => $this->section,
-            'title' => $this->title,
-            'body_markdown' => $this->body_markdown !== '' ? $this->body_markdown : null,
-            'sort_order' => $this->sort_order,
-        ];
-
         if ($this->editingId) {
             $resource = MemberResource::findOrFail($this->editingId);
-            $resource->update($payload);
+            $resource->update([
+                'title' => $this->title,
+                'body_markdown' => $this->body_markdown !== '' ? $this->body_markdown : null,
+            ]);
         } else {
-            $resource = MemberResource::create($payload);
+            $resource = MemberResource::create([
+                'section' => $this->section,
+                'title' => $this->title,
+                'body_markdown' => $this->body_markdown !== '' ? $this->body_markdown : null,
+            ]);
         }
 
         foreach ($this->uploadFiles as $upload) {
@@ -100,7 +97,6 @@ class MemberResourcesManager extends Component
         $this->section = $r->section;
         $this->title = $r->title;
         $this->body_markdown = $r->body_markdown ?? '';
-        $this->sort_order = $r->sort_order;
     }
 
     public function delete(int $id): void
@@ -132,7 +128,6 @@ class MemberResourcesManager extends Component
     public function cancelEditing(): void
     {
         $this->reset(['editingId', 'title', 'body_markdown', 'uploadFiles']);
-        $this->sort_order = 0;
     }
 
     public function render()
@@ -140,8 +135,7 @@ class MemberResourcesManager extends Component
         $items = MemberResource::query()
             ->where('section', $this->section)
             ->with('files')
-            ->orderBy('sort_order')
-            ->orderByDesc('id')
+            ->orderByDesc('created_at')
             ->paginate(15);
 
         return view('livewire.admin.member-resources-manager', [

@@ -66,8 +66,7 @@ class MembersAreaController extends Controller
             'resources' => MemberResource::query()
                 ->where('section', 'naslechy')
                 ->with('files')
-                ->orderBy('sort_order')
-                ->orderByDesc('id')
+                ->orderByDesc('created_at')
                 ->get(),
         ]);
     }
@@ -78,8 +77,7 @@ class MembersAreaController extends Controller
             'resources' => MemberResource::query()
                 ->where('section', 'noty')
                 ->with('files')
-                ->orderBy('sort_order')
-                ->orderByDesc('id')
+                ->orderByDesc('created_at')
                 ->get(),
         ]);
     }

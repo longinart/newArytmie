@@ -51,11 +51,6 @@
                     </div>
 
                     <div>
-                        <label class="mb-1 block text-sm font-medium text-gray-700">Pořadí (číslo)</label>
-                        <input wire:model="sort_order" type="number" min="0" class="w-32 rounded-lg border-gray-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                    </div>
-
-                    <div>
                         <label class="mb-1 block text-sm font-medium text-gray-700">Připojit soubory (PDF, MP3, …)</label>
                         <input wire:model="uploadFiles" type="file" multiple class="block w-full text-sm text-gray-600 file:mr-4 file:rounded-lg file:border-0 file:bg-indigo-50 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-indigo-700 hover:file:bg-indigo-100">
                         @error('uploadFiles.*') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
@@ -76,18 +71,19 @@
             </div>
 
             <div class="rounded-xl bg-white p-5 shadow">
-                <h2 class="mb-4 text-lg font-medium text-gray-900">Seznam v této sekci</h2>
-                <div class="space-y-4">
+                <h2 class="mb-1 text-lg font-medium text-gray-900">Seznam v této sekci</h2>
+                <p class="mb-4 text-xs text-gray-500">Nejnovější příspěvek je vždy nahoře (řadí se podle data vytvoření).</p>
+                <div class="space-y-4" wire:key="mr-list-{{ $section }}-p{{ $items->currentPage() }}">
                     @forelse ($items as $item)
-                        <div class="rounded-lg border border-gray-200 p-4 text-sm">
+                        <div wire:key="mr-item-{{ $item->id }}" class="rounded-lg border border-gray-200 p-4 text-sm">
                             <div class="flex flex-wrap items-start justify-between gap-2">
                                 <div>
                                     <p class="font-medium text-gray-900">{{ $item->title }}</p>
-                                    <p class="text-xs text-gray-500">Pořadí: {{ $item->sort_order }}</p>
+                                    <p class="text-xs text-gray-500">{{ $item->created_at?->format('d.m.Y H:i') }}</p>
                                     @if ($item->files->isNotEmpty())
                                         <ul class="mt-2 list-inside list-disc text-xs text-gray-600">
                                             @foreach ($item->files as $f)
-                                                <li class="flex flex-wrap items-center gap-2">
+                                                <li wire:key="mr-file-{{ $f->id }}" class="flex flex-wrap items-center gap-2">
                                                     {{ $f->original_name }}
                                                     <button type="button" wire:click="deleteFile({{ $f->id }})" class="text-red-600 hover:underline">Smazat soubor</button>
                                                 </li>
