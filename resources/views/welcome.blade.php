@@ -119,22 +119,41 @@
             <h2 class="mt-3 text-3xl font-semibold tracking-tight">Nejbližší koncerty</h2>
             <div class="mt-8 grid gap-4 md:grid-cols-3">
                 @forelse ($concertItems as $concert)
-                    <div class="rounded-3xl bg-white/10 p-5">
-                        <p class="text-sm text-orange-200">{{ $concert->starts_at?->format('d.m.Y H:i') }}</p>
-                        <p class="mt-2 text-lg font-semibold">
-                            <a href="{{ route('concerts.show', $concert->slug) }}" class="hover:text-orange-200">
-                                {{ $concert->title }}
+                    <div class="overflow-hidden rounded-3xl bg-white/10">
+                        @if (filled($concert->cover_image_path))
+                            <a
+                                href="{{ route('concerts.show', $concert->slug) }}"
+                                class="block aspect-[16/10] w-full overflow-hidden bg-slate-900/60"
+                                aria-hidden="true"
+                            >
+                                <img
+                                    src="{{ \Illuminate\Support\Facades\Storage::disk('public')->url($concert->cover_image_path) }}"
+                                    alt=""
+                                    class="h-full w-full object-cover transition duration-300 hover:scale-105"
+                                    loading="lazy"
+                                    decoding="async"
+                                    width="640"
+                                    height="400"
+                                >
                             </a>
-                        </p>
-                        <p class="mt-2 text-sm text-orange-100">{{ $concert->venue_name }}, {{ $concert->city }}</p>
-                        @if ($concert->program)
-                            <p class="mt-2 text-xs text-orange-100">
-                                {{ \Illuminate\Support\Str::limit($concert->program, 90) }}
-                            </p>
                         @endif
-                        <a href="{{ route('concerts.show', $concert->slug) }}" class="mt-3 inline-block text-sm font-semibold text-orange-200 hover:text-white">
-                            Detail koncertu &rarr;
-                        </a>
+                        <div class="p-5">
+                            <p class="text-sm text-orange-200">{{ $concert->starts_at?->format('d.m.Y H:i') }}</p>
+                            <p class="mt-2 text-lg font-semibold">
+                                <a href="{{ route('concerts.show', $concert->slug) }}" class="hover:text-orange-200">
+                                    {{ $concert->title }}
+                                </a>
+                            </p>
+                            <p class="mt-2 text-sm text-orange-100">{{ $concert->venue_name }}, {{ $concert->city }}</p>
+                            @if ($concert->program)
+                                <p class="mt-2 text-xs text-orange-100">
+                                    {{ \Illuminate\Support\Str::limit($concert->program, 90) }}
+                                </p>
+                            @endif
+                            <a href="{{ route('concerts.show', $concert->slug) }}" class="mt-3 inline-block text-sm font-semibold text-orange-200 hover:text-white">
+                                Detail koncertu &rarr;
+                            </a>
+                        </div>
                     </div>
                 @empty
                     <div class="rounded-3xl bg-white/10 p-5 md:col-span-3">

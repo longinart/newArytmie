@@ -42,6 +42,8 @@ class ConcertManager extends Component
 
     public bool $is_published = false;
 
+    public ?string $cover_image_path = null;
+
     /**
      * @var mixed
      */
@@ -52,6 +54,35 @@ class ConcertManager extends Component
         if ($this->editingId === null && $this->slug === '') {
             $this->slug = Str::slug($value);
         }
+    }
+
+    public function removeCoverImage(): void
+    {
+        if ($this->coverImage !== null) {
+            $this->coverImage = null;
+
+            return;
+        }
+
+        if ($this->editingId === null) {
+            $this->cover_image_path = null;
+
+            return;
+        }
+
+        $concert = Concert::find($this->editingId);
+        if ($concert === null || $concert->cover_image_path === null) {
+            $this->cover_image_path = null;
+
+            return;
+        }
+
+        $disk = Storage::disk('public');
+        if ($disk->exists($concert->cover_image_path)) {
+            $disk->delete($concert->cover_image_path);
+        }
+        $concert->update(['cover_image_path' => null]);
+        $this->cover_image_path = null;
     }
 
     public function save(): void
@@ -118,6 +149,7 @@ class ConcertManager extends Component
         $this->seo_title = $concert->seo_title ?? '';
         $this->seo_description = $concert->seo_description ?? '';
         $this->is_published = (bool) $concert->is_published;
+        $this->cover_image_path = $concert->cover_image_path;
         $this->coverImage = null;
     }
 
@@ -164,6 +196,7 @@ class ConcertManager extends Component
             'seo_title',
             'seo_description',
             'is_published',
+            'cover_image_path',
         ]);
         $this->coverImage = null;
     }

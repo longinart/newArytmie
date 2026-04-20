@@ -34,16 +34,47 @@
                         @error('slug') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
                     </div>
 
-                    {{-- Upload v izolované podkomponentě: jinak Livewire při výběru souboru přerenderuje celý formulář a rozbije EasyMDE. --}}
+                    {{-- Titulní obrázek v rodiči: soubor musí být v ConcertManager při Uložit (izolovaný upload se do rodiče nepropsal). Markdown je v #[Isolate] podkomponentách níže. --}}
                     <div>
-                        <livewire:admin.concert-cover-upload
+                        <label class="mb-1 block text-sm font-medium text-gray-700">Titulní obrázek</label>
+                        <p class="mb-1 text-xs text-gray-500">
+                            Volitelný náhled u detailu koncertu a v přehledu na úvodní stránce — kliknutím na detailu se zvětší.
+                        </p>
+                        <input
                             wire:model="coverImage"
-                            :editing-concert-id="$editingId"
-                            wire:key="concert-cu-{{ $editingId ?? 'new' }}"
-                        />
+                            wire:key="cm-cover-{{ $editingId ?? 'new' }}"
+                            type="file"
+                            accept="image/*"
+                            class="block w-full text-sm text-gray-600 file:mr-4 file:rounded-lg file:border-0 file:bg-indigo-50 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-indigo-700 hover:file:bg-indigo-100"
+                        >
                         @error('coverImage')
                             <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
                         @enderror
+                        <div class="mt-3 flex flex-wrap items-end gap-4">
+                            @if ($coverImage && method_exists($coverImage, 'temporaryUrl'))
+                                <div>
+                                    <img
+                                        src="{{ $coverImage->temporaryUrl() }}"
+                                        alt=""
+                                        class="h-36 max-w-sm rounded-lg border border-gray-200 object-cover"
+                                    >
+                                    <button type="button" wire:click="removeCoverImage" class="mt-1 text-xs text-red-600 hover:underline">
+                                        Zrušit nový obrázek
+                                    </button>
+                                </div>
+                            @elseif ($cover_image_path)
+                                <div>
+                                    <img
+                                        src="{{ \Illuminate\Support\Facades\Storage::disk('public')->url($cover_image_path) }}"
+                                        alt=""
+                                        class="h-36 max-w-sm rounded-lg border border-gray-200 object-cover"
+                                    >
+                                    <button type="button" wire:click="removeCoverImage" class="mt-1 text-xs text-red-600 hover:underline">
+                                        Odebrat obrázek
+                                    </button>
+                                </div>
+                            @endif
+                        </div>
                     </div>
 
                     <div class="grid gap-4 md:grid-cols-2">
@@ -77,17 +108,17 @@
                         <input wire:model="venue_address" type="text" class="w-full rounded-lg border-gray-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                     </div>
 
-                    <div>
-                        <label class="mb-1 block text-sm font-medium text-gray-700">Program (Markdown)</label>
-                        <p class="mb-1 text-xs text-gray-500">Seznam skladeb, odkazy — lze formátovat jako u aktualit.</p>
-                        <x-admin.easymde-field name="program" :value="$program" :editor-key="($editingId ?? 'n').'-prog'" />
-                    </div>
+                    <livewire:admin.concert-program-field
+                        wire:model="program"
+                        :editing-concert-id="$editingId"
+                        wire:key="cmf-prog-{{ $editingId ?? 'new' }}"
+                    />
 
-                    <div>
-                        <label class="mb-1 block text-sm font-medium text-gray-700">Popis (Markdown)</label>
-                        <p class="mb-1 text-xs text-gray-500">Delší text o koncertu, obrázky z editoru.</p>
-                        <x-admin.easymde-field name="description" :value="$description" :editor-key="($editingId ?? 'n').'-desc'" />
-                    </div>
+                    <livewire:admin.concert-description-field
+                        wire:model="description"
+                        :editing-concert-id="$editingId"
+                        wire:key="cmf-desc-{{ $editingId ?? 'new' }}"
+                    />
 
                     <div>
                         <label class="mb-1 block text-sm font-medium text-gray-700">URL vstupenek</label>
