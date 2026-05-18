@@ -1,0 +1,106 @@
+GO-LIVE CHECKLIST — Arytmie (newArytmie)
+Server: Endora, SSH, PHP 8.3 CLI = php8.3 (NE php 7.3)
+Test path: /home/html/arytmie-praha.cz/_sub/test
+================================================================================
+
+FÁZE 1 — ZÁLOHA STARÉHO WEBU (PŘED SMAZÁNÍM)
+--------------------------------------------------------------------------------
+[ ] 1.1 Stáhnout celý starý web přes FTP/SFTP (celá složka www / public_html).
+      → Stačí jako archiv, ale ověřte, že stahování skončilo bez chyb (velikost, počet souborů).
+
+[ ] 1.2 Záloha databáze (DOPORUČENO i když DB necháte na serveru):
+      - phpMyAdmin → Export → SQL, nebo
+      - mysqldump (pokud máte přístup)
+
+[ ] 1.3 Záloha testovací verze nového webu (_sub/test):
+      - celá složka _sub/test
+      - export DB testu (pokud je jiná než produkční)
+      - storage/app/public (nahrané fotky, galerie, concert-covers)
+      - storage/app/members_private (soubory pro členky)
+
+[ ] 1.4 Uložit zálohy mimo server (disk, cloud) s datem v názvu, např.:
+      backup-arytmie-2026-04-20-files.zip
+      backup-arytmie-2026-04-20-db.sql
+
+FÁZE 2 — PŘÍPRAVA NA PRODUKCI (LOKÁLNĚ NEBO NA TESTU)
+--------------------------------------------------------------------------------
+[ ] 2.1 php8.3 artisan migrate:status  → všechny migrace včetně cover_image_path
+
+[ ] 2.2 Projít test.arytmie-praha.cz:
+      - úvod, aktuality, koncert + obrázek, galerie, kontakt, /pro-cleny
+      - /login → admin: aktuality, koncerty, galerie, materiály pro členky
+
+[ ] 2.3 Lokálně (nebo na serveru): npm ci && npm run build
+      → musí existovat public/build/manifest.json
+
+[ ] 2.4 composer install --no-dev --optimize-autoloader
+      (na serveru vždy: php8.3 /cesta/k/composer install --no-dev ...)
+
+FÁZE 3 — NOVÉ HESLA A KLÍČE (PRODUKČNÍ .env)
+--------------------------------------------------------------------------------
+[ ] 3.1 Nový APP_KEY (na produkci, NIKDY kopírovat z testu):
+      php8.3 artisan key:generate
+
+[ ] 3.2 .env produkce — minimálně:
+      APP_ENV=production
+      APP_DEBUG=false
+      APP_URL=https://www.arytmie-praha.cz   (nebo bez www — jednotně!)
+
+[ ] 3.3 Nové silné heslo: ADMIN_PASSWORD (+ php8.3 artisan db:seed --class=AdminUserSeeder
+      NEBO změna hesla v profilu po prvním loginu)
+
+[ ] 3.4 Nové MEMBERS_AREA_PASSWORD (sdílené heslo členek)
+
+[ ] 3.5 DB_* — produkční databáze (Endora)
+
+[ ] 3.6 TURNSTILE_SITE_KEY + TURNSTILE_SECRET_KEY (produkční doména v Cloudflare)
+      TURNSTILE_ENABLED=true
+
+[ ] 3.7 MEMBERS_GOOGLE_CALENDAR_* — harmonogram v členské sekci (zkontrolovat)
+
+[ ] 3.8 .env NIKDY necommitovat do gitu, práva na serveru jen pro web usera
+
+FÁZE 4 — NASAZENÍ NA ŽIVOU DOMÉNU
+--------------------------------------------------------------------------------
+[ ] 4.1 Rozhodnout strukturu:
+      A) Document root = .../public  (doporučeno)
+      B) Kořen webu = public složka (zkopírovat obsah public/ do www)
+
+[ ] 4.2 Nahrát soubory (bez node_modules, .git, .env z testu):
+      - vendor lze nahrát nebo composer install na serveru
+      - storage a bootstrap/cache musí být zapisovatelné
+
+[ ] 4.3 Na serveru v kořeni projektu:
+      php8.3 artisan migrate --force
+      php8.3 artisan storage:link
+      php8.3 artisan config:cache
+      php8.3 artisan route:cache
+      php8.3 artisan view:cache
+      php8.3 artisan optimize
+
+[ ] 4.4 Zkopírovat z testu na produkci:
+      storage/app/public/*
+      storage/app/members_private/*  (pokud už máte nahrané soubory členek)
+
+[ ] 4.5 Hosting panel: PHP verze pro WEB = 8.3+ (ne jen CLI)
+
+[ ] 4.6 HTTPS / certifikát (Let's Encrypt) zapnutý
+
+FÁZE 5 — VYPNUTÍ TESTU A STARÉHO WEBU
+--------------------------------------------------------------------------------
+[ ] 5.1 Po ověření živého webu: smazat nebo zablokovat test.arytmie-praha.cz
+      (složka _sub/test nebo subdomain v panelu)
+
+[ ] 5.2 Smazat starý web až po 24–48 h bez problémů na živé verzi
+
+[ ] 5.3 Odstranit testovací .env / záložní kopie z veřejně dostupných cest
+
+FÁZE 6 — FINÁLNÍ KONTROLA PO SPUŠTĚNÍ
+--------------------------------------------------------------------------------
+[ ] 6.1 https://www.arytmie-praha.cz — úvod, odkazy, galerie, kontakt
+[ ] 6.2 Přihlášení admin, uložení testovací aktuality/koncertu
+[ ] 6.3 /pro-cleny — heslo, stažení souboru
+[ ] 6.4 storage/logs/laravel.log — žádné nové ERROR
+[ ] 6.5 Předat majiteli: docs/PREDAANI-MAJITELI.txt (doplnit hesla ručně)
+
+================================================================================

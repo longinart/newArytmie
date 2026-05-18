@@ -5,23 +5,6 @@ namespace App\Support;
 class GoogleCalendarEmbed
 {
     /**
-     * URL pro iframe — kalendář na úvodní stránce (veřejný koncertní kalendář).
-     */
-    public static function embedUrl(): ?string
-    {
-        $src = config('services.google_calendar.embed_src');
-        if (! is_string($src) || trim($src) === '') {
-            return null;
-        }
-
-        return self::buildEmbedUrl(
-            $src,
-            config('services.google_calendar.timezone') ?: 'Europe/Prague',
-            config('services.google_calendar.mode') ?: 'AGENDA',
-        );
-    }
-
-    /**
      * URL pro iframe — kalendář v členské sekci (zkoušky / harmonogram).
      */
     public static function membersRehearsalEmbedUrl(): ?string

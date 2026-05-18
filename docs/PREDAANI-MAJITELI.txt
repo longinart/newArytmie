@@ -1,0 +1,74 @@
+================================================================================
+  ARYTMIE PRAHA — nový web (arytmie-praha.cz)
+  Předávací dokument pro správce obsahu
+  Datum: _______________
+================================================================================
+
+1. CO SE ZMĚNILO
+--------------------------------------------------------------------------------
+- Nový moderní web (aktuality, koncerty, galerie, kontakt).
+- Administrace je na adrese: https://www.arytmie-praha.cz/login
+  (po přihlášení: /admin — aktuality, koncerty, galerie, materiály pro členky).
+- Členská sekce (heslo sdílené mezi členkami): https://www.arytmie-praha.cz/pro-cleny
+  — harmonogram, náslechy, noty, stažení souborů.
+
+2. PŘIHLÁŠENÍ DO ADMINISTRACE
+--------------------------------------------------------------------------------
+URL:      https://www.arytmie-praha.cz/login
+E-mail:   _________________________________  (doplní správce webu)
+Heslo:    _________________________________  (silné, uložte na bezpečné místo)
+
+Doporučení:
+- Heslo nikomu neposílejte e-mailem v čitelné podobě.
+- Po prvním přihlášení si heslo změňte v profilu (pokud je funkce dostupná),
+  nebo požádejte technickou podporu o změnu.
+
+3. HESLO PRO ČLENKY (/pro-cleny)
+--------------------------------------------------------------------------------
+- Jedno společné heslo pro všechny členky (není to osobní účet).
+- Heslo spravuje technik v nastavení serveru (.env) — po změně dejte vědět členkám.
+- Aktuální heslo (doplní správce): _________________________________
+
+4. CO UMÍTE V ADMINISTRACI
+--------------------------------------------------------------------------------
+Aktuality     — články na úvodní stránce, Markdown editor, obrázky v textu.
+Koncerty      — termíny, místo, program, popis, titulní fotka, vstupenky (odkaz).
+Galerie       — alba a fotky (náhledy, zvětšení po kliknutí).
+Materiály     — soubory pro členky (Náslechy / Noty), PDF, MP3 atd.
+
+Publikace: u koncertů a aktualit zaškrtněte „Publikováno“, jinak je návštěvník neuvidí.
+
+5. KONTAKTNÍ FORMULÁŘ
+--------------------------------------------------------------------------------
+- Zprávy z formuláře se ukládají do databáze (administrace je zatím bez přehledu
+  zpráv v rozhraní — lze doplnit později).
+- Ochrana proti robotům: Cloudflare Turnstile (pokud je zapnuté).
+
+6. KALENDÁŘ KONCERTŮ NA ÚVODU
+--------------------------------------------------------------------------------
+- Zobrazuje se vložený Google kalendář (nastavení v konfiguraci serveru).
+- Termíny koncertů v přehledu „Nejbližší koncerty“ pocházejí z administrace Koncerty.
+
+7. TECHNICKÁ PODPORA (kdo web spravuje)
+--------------------------------------------------------------------------------
+Jméno / kontakt: _________________________________
+E-mail:          _________________________________
+Telefon:         _________________________________
+
+Typické požadavky: nové heslo admina, změna hesla pro členky, záloha webu,
+  problém s nahráním fotky, výpadek stránky.
+
+8. ZÁLOHOVÁNÍ (doporučení)
+--------------------------------------------------------------------------------
+- Hosting: pravidelná záloha souborů + databáze (Endora / správce hostingu).
+- Před větší úpravou obsahu není nutná záloha, ale před technickými zásahy ano.
+
+9. DŮLEŽITÉ — NEDĚLAT
+--------------------------------------------------------------------------------
+- Nemazat složky na serveru (storage, vendor, .env).
+- Nesdílet přístupové údaje k FTP a databázi s neověřenými osobami.
+- Neposílat heslo admina v otevřeném e-mailu.
+
+================================================================================
+  Tento dokument doplňte ručně údaji označenými podtržítkem a uložte na bezpečné místo.
+================================================================================
